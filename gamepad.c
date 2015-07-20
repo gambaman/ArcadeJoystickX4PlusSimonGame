@@ -34,34 +34,36 @@
 
 #define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
 
-#define SNES_DDR	DDRF
-#define SNES_PORT	PORTF
-#define SNES_PINS	PINF
+#define DIRECTION_DDR DDRC
+#define DIRECTION_PORT PORTC
+#define DIRECTION_PINS PINC
 
-void read_snes_state() {
-	uint8_t cached_pins=~SNES_PINS;
-	// 12 cycles to read 4 directions and 8 buttons
-	for (int i=0; i<12; i++) {
-#define on(x) ((cached_pins >> x) & 1)
-		switch (i) {
-		case 0: gamepad_state.b_btn = 0x1; break;
-		case 1: gamepad_state.y_btn = 0x1; break;
-		case 2: gamepad_state.select_btn = on(i); break;
-		case 3: gamepad_state.start_btn = on(i); break;
+#define UP_PIN 4
+#define DOWN_PIN 5
+#define LEFT_PIN 6
+#define RIGHT_PIN 7
+#define DIRECTION_PINS_MASK ((1<<UP_PIN)|(1<<DOWN_PIN)|(1<<RIGHT_PIN)|(1<<LEFT_PIN))
 
+#define is_active_pin(port,pin) (!(port&(1<<pin)))
+
+#define BUTTONS_DDR	DDRF
+#define BUTTONS_PORT	PORTF
+#define BUTTONS_PINS	PINF
+
+void read_snes_state(void) {
+	gamepad_state.buttons=~BUTTONS_PINS;
+	gamepad_state.y_axis =	(is_active_pin(DIRECTION_PINS,UP_PIN)?0:0x80)
+												+ (is_active_pin(DIRECTION_PINS,DOWN_PIN)?0x7f:0);
+	gamepad_state.x_axis = 	(is_active_pin(DIRECTION_PINS,RIGHT_PIN)?0X7F:0)
+												+ (is_active_pin(DIRECTION_PINS,LEFT_PIN)?0:0x80);
+	/*
 		case 4: if (on(i)) gamepad_state.y_axis = 0x00; break;
 		case 5: if (on(i)) gamepad_state.y_axis = 0xff; break;
 		case 6: if (on(i)) gamepad_state.x_axis = 0x00; break;
 		case 7: if (on(i)) gamepad_state.x_axis = 0xff; break;
-
-		case 8: gamepad_state.a_btn = on(i); break;
-		case 9: gamepad_state.x_btn = on(i); break;
-		case 10: gamepad_state.l_btn = on(i); break;
-		case 11: gamepad_state.r_btn = on(i); break;
+*/
 		}
-	}
 
-}
 
 int main(void) {
 	// set for 16 MHz clock
@@ -70,8 +72,8 @@ int main(void) {
 	// good explenation of how AVR pins work:
 	// http://www.pjrc.com/teensy/pins.html
 
-	SNES_DDR=  0; //set as input
-	SNES_PORT=  0xff; MCUCR&=~(1<<4); //activate pullup
+	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
+	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pullup
 
 	LED_CONFIG;
 	LED_ON; // power up led on startup for 1 sec

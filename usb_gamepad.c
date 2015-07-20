@@ -227,10 +227,7 @@ static const struct descriptor_list_struct {
 static volatile uint8_t usb_configuration = 0;
 
 static const gamepad_state_t PROGMEM gamepad_idle_state = {
-	.x_axis = 0x80, .y_axis = 0x80,
-	.a_btn = 0, .b_btn = 0, .x_btn = 0, .y_btn = 0,
-	.l_btn = 0, .r_btn = 0,
-	.select_btn = 0, .start_btn = 0,
+	.x_axis = 0x80, .y_axis = 0x80, .buttons=0,
 };
 
 static uint8_t gamepad_idle_config = 0;

@@ -39,6 +39,8 @@ typedef struct {
 
 	// digital buttons, 0 = off, 1 = on
 
+	uint8_t buttons;
+	/*
 	uint8_t a_btn : 1;
 	uint8_t b_btn : 1;
 	uint8_t x_btn : 1;
@@ -49,6 +51,7 @@ typedef struct {
 
 	uint8_t select_btn : 1;
 	uint8_t start_btn : 1;
+	*/
 } gamepad_state_t;
 
 extern gamepad_state_t gamepad_state;
