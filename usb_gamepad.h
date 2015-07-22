@@ -1,4 +1,4 @@
-/* Teensy SNES Gamepad
+/* Teensy Gamepad
  * Copyright (C) 2011 Josh Kropf <josh@slashdev.ca>
  *
  * Based on keyboard example for Teensy USB Development Board

@@ -1,4 +1,4 @@
-/* Teensy SNES Gamepad
+/* Teensy Gamepad
  * Copyright (C) 2011 Josh Kropf <josh@slashdev.ca>
  *
  * Based on keyboard example for Teensy USB Development Board
@@ -50,7 +50,7 @@
 #define BUTTONS_PORT	PORTF
 #define BUTTONS_PINS	PINF
 
-void read_snes_state(void) {
+void read_gamepad_state(void) {
 	gamepad_state.buttons=~BUTTONS_PINS;
 	gamepad_state.y_axis =	(is_active_pin(DIRECTION_PINS,UP_PIN)?0:0x80)
 												+ (is_active_pin(DIRECTION_PINS,DOWN_PIN)?0x7f:0);
@@ -89,15 +89,10 @@ int main(void) {
 	_delay_ms(1000);
 
 	LED_OFF;
-/*
-while(1)
-	if((SNES_PINS&1))
-		LED_ON;
-	else
-		LED_OFF;*/
+
 	while (1) {
 		usb_gamepad_reset_state();
-		read_snes_state();
+		read_gamepad_state();
 		usb_gamepad_send();
 	}
 }

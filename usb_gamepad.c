@@ -1,4 +1,4 @@
-/* Teensy SNES Gamepad
+/* Teensy Gamepad
  * Copyright (C) 2011 Josh Kropf <josh@slashdev.ca>
  *
  * Based on keyboard example for Teensy USB Development Board
@@ -36,7 +36,7 @@
 
 // You can change these to give your code its own name.
 #define STR_MANUFACTURER	L"Josh Kropf"
-#define STR_PRODUCT		L"Teensy SNES Gamepad"
+#define STR_PRODUCT		L"Teensy Gamepad"
 
 
 // Mac OS-X and Linux automatically load the correct drivers.  On
