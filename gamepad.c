@@ -50,18 +50,19 @@
 #define BUTTONS_PORT	PORTF
 #define BUTTONS_PINS	PINF
 
+uint8_t axis_value(uint8_t port,uint8_t increment_pin, uint8_t decrement_pin)
+{
+	if(is_active_pin(port,increment_pin))
+		return 0xff;
+	if(is_active_pin(port,decrement_pin))
+		return 0;
+	return 0x80;
+}
+
 void read_gamepad_state(void) {
 	gamepad_state.buttons=~BUTTONS_PINS;
-	gamepad_state.y_axis =	(is_active_pin(DIRECTION_PINS,UP_PIN)?0:0x80)
-												+ (is_active_pin(DIRECTION_PINS,DOWN_PIN)?0x7f:0);
-	gamepad_state.x_axis = 	(is_active_pin(DIRECTION_PINS,RIGHT_PIN)?0X7F:0)
-												+ (is_active_pin(DIRECTION_PINS,LEFT_PIN)?0:0x80);
-	/*
-		case 4: if (on(i)) gamepad_state.y_axis = 0x00; break;
-		case 5: if (on(i)) gamepad_state.y_axis = 0xff; break;
-		case 6: if (on(i)) gamepad_state.x_axis = 0x00; break;
-		case 7: if (on(i)) gamepad_state.x_axis = 0xff; break;
-*/
+	gamepad_state.y_axis =	axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
+	gamepad_state.x_axis = 	axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 		}
 
 
