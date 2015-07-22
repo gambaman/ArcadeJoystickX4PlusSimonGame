@@ -92,8 +92,8 @@ int main(void) {
 	LED_OFF;
 
 	while (1) {
-		usb_gamepad_reset_state();
+		//usb_gamepad_reset_state();
 		read_gamepad_state();
-		usb_gamepad_send();
+		usb_gamepad_send(GAMEPAD_INTERFACE(0));
 	}
 }

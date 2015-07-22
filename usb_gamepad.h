@@ -31,35 +31,22 @@
 void usb_init(void);			// initialize everything
 uint8_t usb_configured(void);		// is the USB port configured
 
+#define NUMBER_OF_INTERFACES 5
+#define GAMEPAD_INTERFACE(x)	x
+
 typedef struct {
 	// dpad axis, 0x00 left/up, 0x80 middle, 0xff right/down
-
 	uint8_t x_axis;
 	uint8_t y_axis;
-
 	// digital buttons, 0 = off, 1 = on
-
 	uint8_t buttons;
-	/*
-	uint8_t a_btn : 1;
-	uint8_t b_btn : 1;
-	uint8_t x_btn : 1;
-	uint8_t y_btn : 1;
-
-	uint8_t l_btn : 1;
-	uint8_t r_btn : 1;
-
-	uint8_t select_btn : 1;
-	uint8_t start_btn : 1;
-	*/
 } gamepad_state_t;
 
 extern gamepad_state_t gamepad_state;
 
 void usb_gamepad_reset_state(void);
 
-int8_t usb_gamepad_send(void);
-
+int8_t usb_gamepad_send(int8_t gamepad_number);
 
 // Everything below this point is only intended for usb_gamepad.c
 #ifdef USB_GAMEPAD_PRIVATE_INCLUDE
@@ -83,7 +70,7 @@ int8_t usb_gamepad_send(void);
 			((s) == 16 ? 0x10 :	\
 			             0x00)))
 
-#define MAX_ENDPOINT		4
+#define MAX_ENDPOINT		12
 
 #define LSB(n) (n & 255)
 #define MSB(n) ((n >> 8) & 255)

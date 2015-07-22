@@ -35,8 +35,8 @@
  **************************************************************************/
 
 // You can change these to give your code its own name.
-#define STR_MANUFACTURER	L"Josh Kropf"
-#define STR_PRODUCT		L"Teensy Gamepad"
+#define STR_MANUFACTURER	L"Gambaman"
+#define STR_PRODUCT		L"joystick x 4 + joystick0"
 
 
 // Mac OS-X and Linux automatically load the correct drivers.  On
@@ -63,13 +63,15 @@
  **************************************************************************/
 
 #define ENDPOINT0_SIZE	64
-
-#define GAMEPAD_INTERFACE	0
-#define GAMEPAD_ENDPOINT	1
+#define GAMEPAD_ENDPOINT(x)	(x+1)
 #define GAMEPAD_SIZE		64
 #define GAMEPAD_BUFFER	EP_DOUBLE_BUFFER
 
 static const uint8_t PROGMEM endpoint_config_table[] = {
+	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(GAMEPAD_SIZE) | GAMEPAD_BUFFER,
+	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(GAMEPAD_SIZE) | GAMEPAD_BUFFER,
+	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(GAMEPAD_SIZE) | GAMEPAD_BUFFER,
+	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(GAMEPAD_SIZE) | GAMEPAD_BUFFER,
 	1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(GAMEPAD_SIZE) | GAMEPAD_BUFFER,
 	0,
 	0,
@@ -132,16 +134,21 @@ static const uint8_t PROGMEM gamepad_hid_report_desc[] = {
 	0xc0              // END_COLLECTION
 };
 
+#define CONFIG1_DESCRIPTION_SIZE 9
+#define INTERFACE_DESCRIPTION_SIZE 9
+#define HID_DESCRIPTION_SIZE 9
+#define ENDPOINT_DESCRIPTION_SIZE 7
 
-#define CONFIG1_DESC_SIZE		(9+9+9+7)
-#define GAMEPAD_HID_DESC_OFFSET	(9+9)
+#define CONFIG1_DESC_SIZE		(CONFIG1_DESCRIPTION_SIZE+(INTERFACE_DESCRIPTION_SIZE+HID_DESCRIPTION_SIZE+ENDPOINT_DESCRIPTION_SIZE)*NUMBER_OF_INTERFACES)
+#define GAMEPAD_HID_DESC_OFFSET(x)	(CONFIG1_DESCRIPTION_SIZE+INTERFACE_DESCRIPTION_SIZE+(HID_DESCRIPTION_SIZE+ENDPOINT_DESCRIPTION_SIZE+INTERFACE_DESCRIPTION_SIZE)*x)
+
 static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
 	9, 					// bLength;
 	2,					// bDescriptorType;
 	LSB(CONFIG1_DESC_SIZE),			// wTotalLength
 	MSB(CONFIG1_DESC_SIZE),
-	1,					// bNumInterfaces
+	NUMBER_OF_INTERFACES,		// bNumInterfaces
 	1,					// bConfigurationValue
 	0,					// iConfiguration
 	0x80,					// bmAttributes
@@ -149,7 +156,7 @@ static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
 	9,					// bLength
 	4,					// bDescriptorType
-	GAMEPAD_INTERFACE,			// bInterfaceNumber
+	GAMEPAD_INTERFACE(0),			// bInterfaceNumber
 	0,					// bAlternateSetting
 	1,					// bNumEndpoints
 	0x03,					// bInterfaceClass (0x03 = HID)
@@ -168,10 +175,119 @@ static const uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
 	7,					// bLength
 	5,					// bDescriptorType
-	GAMEPAD_ENDPOINT | 0x80,		// bEndpointAddress
+	GAMEPAD_ENDPOINT(0) | 0x80,		// bEndpointAddress
+	0x03,					// bmAttributes (0x03=intr)
+	GAMEPAD_SIZE, 0,			// wMaxPacketSize
+	10,					// bInterval
+	////////////////////////////////////////////////////////////
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	GAMEPAD_INTERFACE(1),			// bInterfaceNumber
+	0,					// bAlternateSetting
+	1,					// bNumEndpoints
+	0x03,					// bInterfaceClass (0x03 = HID)
+	0x00,					// bInterfaceSubClass (0x00 = No Boot)
+	0x00,					// bInterfaceProtocol (0x00 = No Protocol)
+	0,					// iInterface
+	// HID interface descriptor, HID 1.11 spec, section 6.2.1
+	9,					// bLength
+	0x21,					// bDescriptorType
+	0x11, 0x01,				// bcdHID
+	0,					// bCountryCode
+	1,					// bNumDescriptors
+	0x22,					// bDescriptorType
+	sizeof(gamepad_hid_report_desc),	// wDescriptorLength
+	0,
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	GAMEPAD_ENDPOINT(1) | 0x80,		// bEndpointAddress
+	0x03,					// bmAttributes (0x03=intr)
+	GAMEPAD_SIZE, 0,			// wMaxPacketSize
+	10,					// bInterval
+	////////////////////////////////////////////////////////////
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	GAMEPAD_INTERFACE(2),			// bInterfaceNumber
+	0,					// bAlternateSetting
+	1,					// bNumEndpoints
+	0x03,					// bInterfaceClass (0x03 = HID)
+	0x00,					// bInterfaceSubClass (0x00 = No Boot)
+	0x00,					// bInterfaceProtocol (0x00 = No Protocol)
+	0,					// iInterface
+	// HID interface descriptor, HID 1.11 spec, section 6.2.1
+	9,					// bLength
+	0x21,					// bDescriptorType
+	0x11, 0x01,				// bcdHID
+	0,					// bCountryCode
+	1,					// bNumDescriptors
+	0x22,					// bDescriptorType
+	sizeof(gamepad_hid_report_desc),	// wDescriptorLength
+	0,
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	GAMEPAD_ENDPOINT(2) | 0x80,		// bEndpointAddress
+	0x03,					// bmAttributes (0x03=intr)
+	GAMEPAD_SIZE, 0,			// wMaxPacketSize
+	10,					// bInterval
+	////////////////////////////////////////////////////////////
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	GAMEPAD_INTERFACE(3),			// bInterfaceNumber
+	0,					// bAlternateSetting
+	1,					// bNumEndpoints
+	0x03,					// bInterfaceClass (0x03 = HID)
+	0x00,					// bInterfaceSubClass (0x00 = No Boot)
+	0x00,					// bInterfaceProtocol (0x00 = No Protocol)
+	0,					// iInterface
+	// HID interface descriptor, HID 1.11 spec, section 6.2.1
+	9,					// bLength
+	0x21,					// bDescriptorType
+	0x11, 0x01,				// bcdHID
+	0,					// bCountryCode
+	1,					// bNumDescriptors
+	0x22,					// bDescriptorType
+	sizeof(gamepad_hid_report_desc),	// wDescriptorLength
+	0,
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	GAMEPAD_ENDPOINT(3) | 0x80,		// bEndpointAddress
+	0x03,					// bmAttributes (0x03=intr)
+	GAMEPAD_SIZE, 0,			// wMaxPacketSize
+	10,					// bInterval
+	////////////////////////////////////////////////////////////
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	GAMEPAD_INTERFACE(4),			// bInterfaceNumber
+	0,					// bAlternateSetting
+	1,					// bNumEndpoints
+	0x03,					// bInterfaceClass (0x03 = HID)
+	0x00,					// bInterfaceSubClass (0x00 = No Boot)
+	0x00,					// bInterfaceProtocol (0x00 = No Protocol)
+	0,					// iInterface
+	// HID interface descriptor, HID 1.11 spec, section 6.2.1
+	9,					// bLength
+	0x21,					// bDescriptorType
+	0x11, 0x01,				// bcdHID
+	0,					// bCountryCode
+	1,					// bNumDescriptors
+	0x22,					// bDescriptorType
+	sizeof(gamepad_hid_report_desc),	// wDescriptorLength
+	0,
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	GAMEPAD_ENDPOINT(4) | 0x80,		// bEndpointAddress
 	0x03,					// bmAttributes (0x03=intr)
 	GAMEPAD_SIZE, 0,			// wMaxPacketSize
 	10					// bInterval
+	////////////////////////////////////////////////////////////
 };
 
 // If you're desperate for a little extra code memory, these strings
@@ -208,8 +324,16 @@ static const struct descriptor_list_struct {
 } PROGMEM descriptor_list[] = {
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
 	{0x0200, 0x0000, config1_descriptor, sizeof(config1_descriptor)},
-	{0x2100, GAMEPAD_INTERFACE, config1_descriptor+GAMEPAD_HID_DESC_OFFSET, 9},
-	{0x2200, GAMEPAD_INTERFACE, gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
+	{0x2100, GAMEPAD_INTERFACE(0), config1_descriptor+GAMEPAD_HID_DESC_OFFSET(0), 9},
+	{0x2200, GAMEPAD_INTERFACE(0), gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
+	{0x2100, GAMEPAD_INTERFACE(1), config1_descriptor+GAMEPAD_HID_DESC_OFFSET(1), 9},
+	{0x2200, GAMEPAD_INTERFACE(1), gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
+	{0x2100, GAMEPAD_INTERFACE(2), config1_descriptor+GAMEPAD_HID_DESC_OFFSET(2), 9},
+	{0x2200, GAMEPAD_INTERFACE(2), gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
+	{0x2100, GAMEPAD_INTERFACE(3), config1_descriptor+GAMEPAD_HID_DESC_OFFSET(3), 9},
+	{0x2200, GAMEPAD_INTERFACE(3), gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
+	{0x2100, GAMEPAD_INTERFACE(4), config1_descriptor+GAMEPAD_HID_DESC_OFFSET(4), 9},
+	{0x2200, GAMEPAD_INTERFACE(4), gamepad_hid_report_desc, sizeof(gamepad_hid_report_desc)},
 	{0x0300, 0x0000, (const uint8_t *)&string0, 4},
 	{0x0301, 0x0409, (const uint8_t *)&string1, sizeof(STR_MANUFACTURER)},
 	{0x0302, 0x0409, (const uint8_t *)&string2, sizeof(STR_PRODUCT)}
@@ -225,11 +349,11 @@ static const struct descriptor_list_struct {
 
 // zero when we are not configured, non-zero when enumerated
 static volatile uint8_t usb_configuration = 0;
-
+/*
 static const gamepad_state_t PROGMEM gamepad_idle_state = {
 	.x_axis = 0x80, .y_axis = 0x80, .buttons=0,
 };
-
+*/
 static uint8_t gamepad_idle_config = 0;
 
 // protocol setting from the host.  We use exactly the same report
@@ -263,18 +387,18 @@ uint8_t usb_configured(void) {
 }
 
 gamepad_state_t gamepad_state;
-
+/*
 inline void usb_gamepad_reset_state(void) {
 	memcpy_P(&gamepad_state, &gamepad_idle_state, sizeof(gamepad_state_t));
 }
-
-int8_t usb_gamepad_send(void) {
+*/
+int8_t usb_gamepad_send(int8_t gamepad_number) {
 	uint8_t intr_state, timeout, i;
 
 	if (!usb_configuration) return -1;
 	intr_state = SREG;
 	cli();
-	UENUM = GAMEPAD_ENDPOINT;
+	UENUM = GAMEPAD_ENDPOINT(gamepad_number);
 	timeout = UDFNUML + 50;
 	while (1) {
 		// are we ready to transmit?
@@ -287,7 +411,7 @@ int8_t usb_gamepad_send(void) {
 		// get ready to try checking again
 		intr_state = SREG;
 		cli();
-		UENUM = GAMEPAD_ENDPOINT;
+		UENUM = GAMEPAD_ENDPOINT(gamepad_number);
 	}
 
 	for (i=0; i<sizeof(gamepad_state_t); i++) {
@@ -475,7 +599,7 @@ ISR(USB_COM_vect)
 			}
 		}
 		#endif
-		if (wIndex == GAMEPAD_INTERFACE) {
+		if (wIndex >= GAMEPAD_INTERFACE(0) && wIndex <= GAMEPAD_INTERFACE(NUMBER_OF_INTERFACES-1)) {
 			if (bmRequestType == 0xA1) {
 				if (bRequest == HID_GET_REPORT) {
 					usb_wait_in_ready();
