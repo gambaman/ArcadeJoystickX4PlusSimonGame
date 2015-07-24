@@ -386,7 +386,7 @@ uint8_t usb_configured(void) {
 	return usb_configuration;
 }
 
-gamepad_state_t gamepad_state;
+gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
 /*
 inline void usb_gamepad_reset_state(void) {
 	memcpy_P(&gamepad_state, &gamepad_idle_state, sizeof(gamepad_state_t));
@@ -415,7 +415,7 @@ int8_t usb_gamepad_send(int8_t gamepad_number) {
 	}
 
 	for (i=0; i<sizeof(gamepad_state_t); i++) {
-		UEDATX = ((uint8_t*)&gamepad_state)[i];
+		UEDATX = ((uint8_t*)&gamepad_state[gamepad_number])[i];
 	}
 
 	UEINTX = 0x3A;
@@ -604,7 +604,7 @@ ISR(USB_COM_vect)
 				if (bRequest == HID_GET_REPORT) {
 					usb_wait_in_ready();
 					for (i=0; i<sizeof(gamepad_state_t); i++) {
-						UEDATX = ((uint8_t*)&gamepad_state)[i];
+						UEDATX = ((uint8_t*)&(gamepad_state[GAMEPAD_NUMBER(wIndex)]))[i];
 					}
 					usb_send_in();
 					return;

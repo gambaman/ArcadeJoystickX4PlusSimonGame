@@ -32,7 +32,8 @@ void usb_init(void);			// initialize everything
 uint8_t usb_configured(void);		// is the USB port configured
 
 #define NUMBER_OF_INTERFACES 5
-#define GAMEPAD_INTERFACE(x)	x
+#define GAMEPAD_INTERFACE(x) x
+#define GAMEPAD_NUMBER(x)	x
 
 typedef struct {
 	// dpad axis, 0x00 left/up, 0x80 middle, 0xff right/down
@@ -42,9 +43,9 @@ typedef struct {
 	uint8_t buttons;
 } gamepad_state_t;
 
-extern gamepad_state_t gamepad_state;
+extern gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
 
-void usb_gamepad_reset_state(void);
+//void usb_gamepad_reset_state(void);
 
 int8_t usb_gamepad_send(int8_t gamepad_number);
 

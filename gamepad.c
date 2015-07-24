@@ -44,6 +44,12 @@
 #define RIGHT_PIN 7
 #define DIRECTION_PINS_MASK ((1<<UP_PIN)|(1<<DOWN_PIN)|(1<<RIGHT_PIN)|(1<<LEFT_PIN))
 
+#define SELECTOR_DDR DDRB
+#define SELECTOR_PORT PORTB
+#define SELECTOR_PINS PINB
+#define SELECTOR_PINS_MASK (((1<<NUMBER_OF_INTERFACES)-1)<<1)//player selection pins starting at 1
+#define select_gamepad(x) SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<x)
+
 #define is_active_pin(port,pin) (!(port&(1<<pin)))
 
 #define BUTTONS_DDR	DDRF
@@ -59,12 +65,18 @@ uint8_t axis_value(uint8_t port,uint8_t increment_pin, uint8_t decrement_pin)
 	return 0x80;
 }
 
-void read_gamepad_state(void) {
-	gamepad_state.buttons=~BUTTONS_PINS;
-	gamepad_state.y_axis =	axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
-	gamepad_state.x_axis = 	axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
-		}
-
+void read_gamepad_state(uint8_t gamepad)
+{
+	gamepad_state[gamepad].buttons=~BUTTONS_PINS;
+	gamepad_state[gamepad].y_axis =	axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
+	gamepad_state[gamepad].x_axis = axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
+}
+void usb_gamepad_reset_state(uint8_t gamepad)
+{
+	gamepad_state[gamepad].buttons=0;
+	gamepad_state[gamepad].y_axis =	0x80;
+	gamepad_state[gamepad].x_axis = 0x80;
+}
 
 int main(void) {
 	// set for 16 MHz clock
@@ -75,6 +87,9 @@ int main(void) {
 
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
 	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pullup
+
+	SELECTOR_DDR=SELECTOR_PINS_MASK;//set as output
+	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
 
 	LED_CONFIG;
 	LED_ON; // power up led on startup for 1 sec
@@ -87,13 +102,19 @@ int main(void) {
 
 	// Wait an extra second for the PC's operating system to load drivers
 	// and do whatever it does to actually be ready for input
+	uint8_t selected_player;
+	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
+		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
+	selected_player=1;
+	select_gamepad(selected_player);
 	_delay_ms(1000);
 
 	LED_OFF;
 
 	while (1) {
-		//usb_gamepad_reset_state();
-		read_gamepad_state();
-		usb_gamepad_send(GAMEPAD_INTERFACE(0));
+		read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
+		usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
+		selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
+		select_gamepad(selected_player);
 	}
 }
