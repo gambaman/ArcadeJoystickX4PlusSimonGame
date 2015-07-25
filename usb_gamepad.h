@@ -43,7 +43,7 @@ typedef struct {
 	uint8_t buttons;
 } gamepad_state_t;
 
-extern gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
+extern volatile gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
 
 //void usb_gamepad_reset_state(void);
 

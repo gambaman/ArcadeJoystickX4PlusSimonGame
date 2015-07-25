@@ -386,7 +386,7 @@ uint8_t usb_configured(void) {
 	return usb_configuration;
 }
 
-gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
+volatile gamepad_state_t gamepad_state[NUMBER_OF_INTERFACES];
 /*
 inline void usb_gamepad_reset_state(void) {
 	memcpy_P(&gamepad_state, &gamepad_idle_state, sizeof(gamepad_state_t));

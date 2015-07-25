@@ -25,6 +25,7 @@
  */
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 #include "usb_gamepad.h"
 
@@ -78,6 +79,8 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 	gamepad_state[gamepad].x_axis = 0x80;
 }
 
+volatile uint8_t selected_player;
+
 int main(void) {
 	// set for 16 MHz clock
 	CPU_PRESCALE(0);
@@ -102,19 +105,33 @@ int main(void) {
 
 	// Wait an extra second for the PC's operating system to load drivers
 	// and do whatever it does to actually be ready for input
-	uint8_t selected_player;
 	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
 		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
 	selected_player=1;
+	TCCR0A=2;//clear counter on compare match
+	TCCR0B=5;//divide frequency by 1024
+	OCR0A=4; //compare match when counter=4 (four times per milisecond)
 	select_gamepad(selected_player);
 	_delay_ms(1000);
+	TCNT0=0x00;     // set timer0 counter initial value to 0
+	TIMSK0=2;// enable timer 0 output compare match 2
+	sei(); // enable interrupts
 
 	LED_OFF;
 
 	while (1) {
-		read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
-		usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
-		selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
-		select_gamepad(selected_player);
+		// read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
+		// usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
+		// selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
+		// select_gamepad(selected_player);
 	}
 }
+// ISR(TIMER0_COMPA_vect){
+// PORTD ^= (1<<6);//LED state changes
+// }
+ ISR(TIMER0_COMPA_vect) {
+ 		read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
+ 		usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
+ 		selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
+ 		select_gamepad(selected_player);
+ }
