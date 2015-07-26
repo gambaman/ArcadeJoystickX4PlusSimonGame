@@ -82,17 +82,41 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 
 volatile uint8_t selected_player;
 
+void configure_clock()
+{
+	//TCCR3A=_BV(COM3C0);//toggle oc1c on compare match
+	TCCR3B=_BV(WGM33)|_BV(WGM32)|5;//clear timer on compare match with ICR3|divide frequency by 1024 (1 Khz aprox.=> 1 ms period)
+}
+
+void count(uint16_t miliseconds)
+{
+	ICR3=miliseconds-1;//the top value
+	cli();//disable interrupts
+	TCNT3=0;     // set timer0 counter initial value to 0
+	TIFR3&=1<<3;  // clear the compare match flag
+	/* Restore global interrupt flag */
+  sei();
+}
+
+#define end_of_count (TIFR3&(1<<3))
+
+void wait_for(uint16_t miliseconds)
+{
+	count(miliseconds);
+	while(!end_of_count);
+}
+
 void configure_beeper()
 {
 	TCCR1A=_BV(COM1C0);//toggle oc1c on compare match
 	TCCR1B=_BV(WGM13)|_BV(WGM12)|3;//clear timer on compare match with ICR1|divide frequency by 64 (15,6 Khz aprox.=>waveform of 7812 Hz)
 }
 
-#define base_fequency 7812 //Hertz
+#define beeper_base_fequency 7812 //Hertz
 
 void beep(uint16_t frequency)
 {
-	ICR1=base_fequency/frequency; // toggle when reach 4
+	ICR1=beeper_base_fequency/frequency; // toggle when reach 4
 	DDRB|=1<<7;
 }
 
@@ -126,10 +150,10 @@ int main(void) {
 		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
 	selected_player=1;
 
-configure_beeper();
-beep(5);
-_delay_ms(3000);
-nobeep;
+// configure_beeper();
+// beep(5);
+// _delay_ms(3000);
+// nobeep;
 
 	TCCR0A=2;//clear counter on compare match
 	TCCR0B=5;//divide frequency by 1024
@@ -142,11 +166,16 @@ nobeep;
 
 	LED_OFF;
 
+	configure_clock();
 	while (1) {
 		// read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
 		// usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
 		// selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
 		// select_gamepad(selected_player);
+		// wait_for(10);
+		// LED_ON;
+		// wait_for(10);
+		// LED_OFF;
 	}
 }
 // ISR(TIMER0_COMPA_vect){
