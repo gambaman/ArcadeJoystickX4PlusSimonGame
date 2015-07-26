@@ -26,6 +26,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#define F_CPU 1000000UL // 1 MHz
 #include <util/delay.h>
 #include "usb_gamepad.h"
 
@@ -81,9 +82,25 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 
 volatile uint8_t selected_player;
 
+void configure_beeper()
+{
+	TCCR1A=_BV(COM1C0);//toggle oc1c on compare match
+	TCCR1B=_BV(WGM13)|_BV(WGM12)|3;//clear timer on compare match with ICR1|divide frequency by 64 (15,6 Khz aprox.=>waveform of 7812 Hz)
+}
+
+#define base_fequency 7812 //Hertz
+
+void beep(uint16_t frequency)
+{
+	ICR1=base_fequency/frequency; // toggle when reach 4
+	DDRB|=1<<7;
+}
+
+#define nobeep DDRB&=~(1<<7)
+
 int main(void) {
-	// set for 16 MHz clock
-	CPU_PRESCALE(0);
+	// set for 1 MHz clock
+	CPU_PRESCALE(1);
 
 	// good explenation of how AVR pins work:
 	// http://www.pjrc.com/teensy/pins.html
@@ -108,9 +125,15 @@ int main(void) {
 	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
 		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
 	selected_player=1;
+
+configure_beeper();
+beep(5);
+_delay_ms(3000);
+nobeep;
+
 	TCCR0A=2;//clear counter on compare match
 	TCCR0B=5;//divide frequency by 1024
-	OCR0A=4; //compare match when counter=4 (four times per milisecond)
+	OCR0A=1; //compare match when counter=1 (once per 2 milisecond aprox.)
 	select_gamepad(selected_player);
 	_delay_ms(1000);
 	TCNT0=0x00;     // set timer0 counter initial value to 0
