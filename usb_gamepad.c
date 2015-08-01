@@ -546,7 +546,7 @@ ISR(USB_COM_vect)
 			usb_configuration = wValue;
 			usb_send_in();
 			cfg = endpoint_config_table;
-			for (i=1; i<5; i++) {
+			for (i=1; i<=NUMBER_OF_INTERFACES; i++) {
 				UENUM = i;
 				en = pgm_read_byte(cfg++);
 				UECONX = en;

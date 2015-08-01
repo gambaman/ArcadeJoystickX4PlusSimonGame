@@ -58,6 +58,12 @@
 #define BUTTONS_PORT	PORTF
 #define BUTTONS_PINS	PINF
 
+
+#define LIGHTS_DDR	DDRD
+#define LIGHTS_PORT	PORTD
+#define LIGHTS_PINS	PIND
+#define LIGHTS_PINS_MASK ((1<<(NUMBER_OF_INTERFACES+1))-1) //There is a LIGHT per player plus the central one
+
 uint8_t axis_value(uint8_t port,uint8_t increment_pin, uint8_t decrement_pin)
 {
 	if(is_active_pin(port,increment_pin))
@@ -70,6 +76,7 @@ uint8_t axis_value(uint8_t port,uint8_t increment_pin, uint8_t decrement_pin)
 void read_gamepad_state(uint8_t gamepad)
 {
 	gamepad_state[gamepad].buttons=~BUTTONS_PINS;
+
 	gamepad_state[gamepad].y_axis =	axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
 	gamepad_state[gamepad].x_axis = axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 }
@@ -82,20 +89,28 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 
 volatile uint8_t selected_player;
 
+void configure_polling_interrupt(void )
+{
+TCCR0A=2;//clear counter on compare match
+TCCR0B=4;//divide frequency by 256
+OCR0A=1; //compare match when counter=1 (1953 times per second aprox.)
+TCNT0=0x00;     // set timer0 counter initial value to 0
+TIMSK0=2;// enable timer 0 output compare match 2
+sei(); // enable interrupts
+}
+
 void configure_clock()
 {
-	//TCCR3A=_BV(COM3C0);//toggle oc1c on compare match
 	TCCR3B=_BV(WGM33)|_BV(WGM32)|5;//clear timer on compare match with ICR3|divide frequency by 1024 (1 Khz aprox.=> 1 ms period)
 }
 
 void count(uint16_t miliseconds)
 {
-	ICR3=miliseconds-1;//the top value
 	cli();//disable interrupts
+	ICR3=miliseconds-1;//the top value
 	TCNT3=0;     // set timer0 counter initial value to 0
 	TIFR3&=1<<3;  // clear the compare match flag
-	/* Restore global interrupt flag */
-  sei();
+  sei();//enable interrupts
 }
 
 #define end_of_count (TIFR3&(1<<3))
@@ -124,13 +139,16 @@ void beep(uint16_t frequency)
 
 int main(void) {
 	// set for 1 MHz clock
-	CPU_PRESCALE(1);
+	CPU_PRESCALE(4);
 
 	// good explenation of how AVR pins work:
 	// http://www.pjrc.com/teensy/pins.html
 
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
+	LIGHTS_DDR= LIGHTS_PINS_MASK; //set as input
 	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pullup
+
+	//LIGHTS_PORT= LIGHTS_PINS_MASK;// turn all of them on
 
 	SELECTOR_DDR=SELECTOR_PINS_MASK;//set as output
 	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
@@ -143,47 +161,41 @@ int main(void) {
 	// this will wait forever.
 	usb_init();
 	while (!usb_configured()) /* wait */ ;
-
+		_delay_ms(1000);
 	// Wait an extra second for the PC's operating system to load drivers
 	// and do whatever it does to actually be ready for input
 	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
 		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
-	selected_player=1;
-
-// configure_beeper();
-// beep(5);
-// _delay_ms(3000);
-// nobeep;
-
-	TCCR0A=2;//clear counter on compare match
-	TCCR0B=5;//divide frequency by 1024
-	OCR0A=1; //compare match when counter=1 (once per 2 milisecond aprox.)
+	selected_player=0;
 	select_gamepad(selected_player);
-	_delay_ms(1000);
-	TCNT0=0x00;     // set timer0 counter initial value to 0
-	TIMSK0=2;// enable timer 0 output compare match 2
-	sei(); // enable interrupts
+
+
+configure_clock();
+configure_beeper();
+configure_polling_interrupt();
+
+beep(500);
+wait_for(3000);
+nobeep;
 
 	LED_OFF;
-
-	configure_clock();
 	while (1) {
 		// read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
 		// usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
 		// selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
 		// select_gamepad(selected_player);
-		// wait_for(10);
-		// LED_ON;
-		// wait_for(10);
-		// LED_OFF;
+		//  wait_for(1000);
+		//  LED_ON;
+		//  wait_for(50);
+		//  LED_OFF;
 	}
 }
 // ISR(TIMER0_COMPA_vect){
 // PORTD ^= (1<<6);//LED state changes
 // }
  ISR(TIMER0_COMPA_vect) {
- 		read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
- 		usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
- 		selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
+ 	 	read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
+ 	 	usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
+ 		selected_player=(selected_player+1)%NUMBER_OF_INTERFACES;
  		select_gamepad(selected_player);
  }
