@@ -46,7 +46,10 @@ TARGET = gamepad
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =	$(TARGET).c \
-	usb_gamepad.c
+	usb_gamepad.c \
+	timing.c \
+	sound.c \
+	simon.c
 
 
 # MCU name, you MUST set this to match the board you are using
@@ -63,7 +66,7 @@ MCU = at90usb1286      # Teensy++ 2.0
 #   so your program will run at the correct speed.  You should also set this
 #   variable to same clock speed.  The _delay_ms() macro uses this, and many
 #   examples use this variable to calculate timings.  Do not add a "UL" here.
-F_CPU = 16000000
+F_CPU = 1000000
 
 
 # Output format. (can be srec, ihex, binary)

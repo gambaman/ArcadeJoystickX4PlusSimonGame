@@ -1,6 +1,6 @@
-/* Teensy Gamepad
- * Copyright (C) 2011 Josh Kropf <josh@slashdev.ca>
- *
+/* 4+1 Joystick plus Simon game
+ * Copyright (C) 2015 David Guerrero
+ * Based on Teensy Gamepad for Josh Kropf <josh@slashdev.ca>
  * Based on keyboard example for Teensy USB Development Board
  * http://www.pjrc.com/teensy/usb_keyboard.html
  * Copyright (c) 2008 PJRC.COM, LLC
@@ -26,9 +26,21 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#define F_CPU 1000000UL // 1 MHz
+//#define F_CPU 1000000UL // 1 MHz
 #include <util/delay.h>
 #include "usb_gamepad.h"
+
+#ifndef TIMING
+#include "timing.h"
+#endif
+
+#ifndef SOUND
+#include "sound.h"
+#endif
+
+#ifndef SIMON
+#include "simon.h"
+#endif
 
 #define LED_CONFIG  (DDRD |= (1<<6))
 #define LED_OFF     (PORTD &= ~(1<<6))
@@ -40,17 +52,17 @@
 #define DIRECTION_PORT PORTC
 #define DIRECTION_PINS PINC
 
-#define UP_PIN 4
-#define DOWN_PIN 5
-#define LEFT_PIN 6
-#define RIGHT_PIN 7
+#define UP_PIN 1
+#define DOWN_PIN 3
+#define LEFT_PIN 0
+#define RIGHT_PIN 2
 #define DIRECTION_PINS_MASK ((1<<UP_PIN)|(1<<DOWN_PIN)|(1<<RIGHT_PIN)|(1<<LEFT_PIN))
 
 #define SELECTOR_DDR DDRB
 #define SELECTOR_PORT PORTB
 #define SELECTOR_PINS PINB
 #define SELECTOR_PINS_MASK (((1<<NUMBER_OF_INTERFACES)-1)<<1)//player selection pins starting at 1
-#define select_gamepad(x) SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<x)
+#define select_gamepad(x) SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<(x+1))
 
 #define is_active_pin(port,pin) (!(port&(1<<pin)))
 
@@ -58,13 +70,17 @@
 #define BUTTONS_PORT	PORTF
 #define BUTTONS_PINS	PINF
 
+#define CENTRAL_BUTTON_DDR DDRE
+#define CENTRAL_BUTTON_PORT PORTE
+#define CENTRAL_BUTTON_PINS PINE
+#define CENTRAL_BUTTON 6
 
 #define LIGHTS_DDR	DDRD
 #define LIGHTS_PORT	PORTD
 #define LIGHTS_PINS	PIND
 #define LIGHTS_PINS_MASK ((1<<(NUMBER_OF_INTERFACES+1))-1) //There is a LIGHT per player plus the central one
 
-uint8_t axis_value(uint8_t port,uint8_t increment_pin, uint8_t decrement_pin)
+uint8_t axis_value(uint8_t port,uint8_t decrement_pin, uint8_t increment_pin)
 {
 	if(is_active_pin(port,increment_pin))
 		return 0xff;
@@ -89,64 +105,31 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 
 volatile uint8_t selected_player;
 
-void configure_polling_interrupt(void )
+void configure_polling_interrupt(void)
 {
+green_semaphore=1;//by default the polling counter can be modified
 TCCR0A=2;//clear counter on compare match
 TCCR0B=4;//divide frequency by 256
-OCR0A=1; //compare match when counter=1 (1953 times per second aprox.)
+OCR0A=1; //compare match when counter=1 (1953 times per second aprox.)=>0.5 miliseconds period aprox.
 TCNT0=0x00;     // set timer0 counter initial value to 0
 TIMSK0=2;// enable timer 0 output compare match 2
 sei(); // enable interrupts
 }
-
-void configure_clock()
-{
-	TCCR3B=_BV(WGM33)|_BV(WGM32)|5;//clear timer on compare match with ICR3|divide frequency by 1024 (1 Khz aprox.=> 1 ms period)
-}
-
-void count(uint16_t miliseconds)
-{
-	cli();//disable interrupts
-	ICR3=miliseconds-1;//the top value
-	TCNT3=0;     // set timer0 counter initial value to 0
-	TIFR3&=1<<3;  // clear the compare match flag
-  sei();//enable interrupts
-}
-
-#define end_of_count (TIFR3&(1<<3))
-
-void wait_for(uint16_t miliseconds)
-{
-	count(miliseconds);
-	while(!end_of_count);
-}
-
-void configure_beeper()
-{
-	TCCR1A=_BV(COM1C0);//toggle oc1c on compare match
-	TCCR1B=_BV(WGM13)|_BV(WGM12)|3;//clear timer on compare match with ICR1|divide frequency by 64 (15,6 Khz aprox.=>waveform of 7812 Hz)
-}
-
-#define beeper_base_fequency 7812 //Hertz
-
-void beep(uint16_t frequency)
-{
-	ICR1=beeper_base_fequency/frequency; // toggle when reach 4
-	DDRB|=1<<7;
-}
-
-#define nobeep DDRB&=~(1<<7)
-
 int main(void) {
 	// set for 1 MHz clock
 	CPU_PRESCALE(4);
-
+	//configure_clock();
+	configure_beeper();
+	configure_simon();
 	// good explenation of how AVR pins work:
 	// http://www.pjrc.com/teensy/pins.html
 
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
-	LIGHTS_DDR= LIGHTS_PINS_MASK; //set as input
-	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pullup
+	LIGHTS_DDR= LIGHTS_PINS_MASK; //set as output
+	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pull-up
+
+	CENTRAL_BUTTON_DDR=0;//set as input
+	CENTRAL_BUTTON_PORT|=(1<<CENTRAL_BUTTON);//activate pull-up
 
 	//LIGHTS_PORT= LIGHTS_PINS_MASK;// turn all of them on
 
@@ -170,14 +153,21 @@ int main(void) {
 	select_gamepad(selected_player);
 
 
-configure_clock();
-configure_beeper();
+
 configure_polling_interrupt();
 
-beep(500);
-wait_for(3000);
-nobeep;
+// {
+// 	int i;
+// 	for(i=4;i>=0;i--)
+// 	{
+// 		//play_tone(i);
+// 		//wait_for_miliseconds(500);
+// 		//nobeep;
+// 		//wait_for(1000);
+// 	}
+// }
 
+	nobeep;
 	LED_OFF;
 	while (1) {
 		// read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
@@ -188,14 +178,26 @@ nobeep;
 		//  LED_ON;
 		//  wait_for(50);
 		//  LED_OFF;
+
+		if(is_active_pin(CENTRAL_BUTTON_PINS,CENTRAL_BUTTON))
+			LIGHTS_PORT|= LIGHTS_PINS_MASK;// turn all of them on
+		else
+			LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
+
 	}
 }
 // ISR(TIMER0_COMPA_vect){
 // PORTD ^= (1<<6);//LED state changes
 // }
+
+volatile uint16_t pullings_counter;
+volatile uint8_t green_semaphore;
+
  ISR(TIMER0_COMPA_vect) {
- 	 	read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
- 	 	usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
- 		selected_player=(selected_player+1)%NUMBER_OF_INTERFACES;
- 		select_gamepad(selected_player);
+	 if(green_semaphore)
+	 	pullings_counter++;
+ 	 read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
+ 	 usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
+	 selected_player=(selected_player+1)%(NUMBER_OF_INTERFACES-1);
+	 select_gamepad(selected_player);
  }

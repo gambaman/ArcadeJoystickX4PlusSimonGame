@@ -36,7 +36,7 @@
 
 // You can change these to give your code its own name.
 #define STR_MANUFACTURER	L"Gambaman"
-#define STR_PRODUCT		L"joystick x 4 + joystick0"
+#define STR_PRODUCT		L"joystick x 4 + master joystick"
 
 
 // Mac OS-X and Linux automatically load the correct drivers.  On
