@@ -413,7 +413,7 @@ int8_t usb_gamepad_send(int8_t gamepad_number) {
 		cli();
 		UENUM = GAMEPAD_ENDPOINT(gamepad_number);
 	}
-
+	//PORTD=1<<gamepad_number;
 	for (i=0; i<sizeof(gamepad_state_t); i++) {
 		UEDATX = ((uint8_t*)&gamepad_state[gamepad_number])[i];
 	}

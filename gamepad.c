@@ -107,12 +107,12 @@ volatile uint8_t selected_player;
 
 void configure_polling_interrupt(void)
 {
-green_semaphore=1;//by default the polling counter can be modified
+//green_semaphore=1;//by default the polling counter can be modified
 TCCR0A=2;//clear counter on compare match
-TCCR0B=4;//divide frequency by 256
 OCR0A=1; //compare match when counter=1 (1953 times per second aprox.)=>0.5 miliseconds period aprox.
 TCNT0=0x00;     // set timer0 counter initial value to 0
 TIMSK0=2;// enable timer 0 output compare match 2
+TCCR0B=4;//divide frequency by 256
 sei(); // enable interrupts
 }
 int main(void) {
@@ -190,12 +190,12 @@ configure_polling_interrupt();
 // PORTD ^= (1<<6);//LED state changes
 // }
 
-volatile uint16_t pullings_counter;
-volatile uint8_t green_semaphore;
+//volatile uint16_t pullings_counter;
+//volatile uint8_t green_semaphore;
 
  ISR(TIMER0_COMPA_vect) {
-	 if(green_semaphore)
-	 	pullings_counter++;
+	// if(green_semaphore)
+	 	//pullings_counter++;
  	 read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
  	 usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
 	 selected_player=(selected_player+1)%(NUMBER_OF_INTERFACES-1);
