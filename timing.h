@@ -28,7 +28,8 @@
 // void count(void);
 // #define end_of_count (TIFR3&(1<<3))
 // void wait_for(uint16_t miliseconds);
+extern volatile uint8_t timing_counter;
 void count_miliseconds(void);
 uint8_t elapsed_miliseconds(void);
 void wait_for_miliseconds(uint8_t miliseconds_delay);
-void active_wait (uint32_t delay);
+void active_wait (uint8_t delay);

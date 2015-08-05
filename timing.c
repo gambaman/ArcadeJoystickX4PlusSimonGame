@@ -38,7 +38,7 @@
 // 	//divide frequency by 1024 (1 Khz aprox.=> 1 ms period)
 // }
 
-uint8_t initial_milisecond;
+uint8_t initial_timestamp;
 //void count(uint16_t miliseconds)
 void count_miliseconds(void)
 {
@@ -52,9 +52,8 @@ void count_miliseconds(void)
   // sei();//enable interrupts
 	//green_semaphore=0;
 	// initial_milisecond=pullings_counter>>1;
-	initial_milisecond=TCNT0;
+	initial_timestamp=timing_counter;
 	//green_semaphore=1;
-	return;
 }
 
 uint8_t elapsed_miliseconds(void)
@@ -70,18 +69,20 @@ uint8_t elapsed_miliseconds(void)
 	// green_semaphore=0;
 	// new_value=pullings_counter;
 	// green_semaphore=1;
-	return TCNT0-initial_milisecond;
-}
-
-void active_wait (uint32_t delay)
-{
-	volatile uint32_t counter;
-	for(counter=0;counter<delay;counter++);
+	return (timing_counter-initial_timestamp);
 }
 
 void wait_for_miliseconds(uint8_t miliseconds_delay)
 {
 	count_miliseconds();
 	while(elapsed_miliseconds()<miliseconds_delay);
+	return;
+}
+
+
+void active_wait (uint8_t delay)
+{
+	volatile uint8_t counter;
+	for(counter=0;counter<delay;counter++);
 	return;
 }

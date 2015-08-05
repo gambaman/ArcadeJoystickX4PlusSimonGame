@@ -26,7 +26,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//#define F_CPU 1000000UL // 1 MHz
+#define F_CPU 16000000UL // 1 MHz
 #include <util/delay.h>
 #include "usb_gamepad.h"
 
@@ -109,15 +109,15 @@ void configure_polling_interrupt(void)
 {
 //green_semaphore=1;//by default the polling counter can be modified
 TCCR0A=2;//clear counter on compare match
-OCR0A=1; //compare match when counter=1 (1953 times per second aprox.)=>0.5 miliseconds period aprox.
+OCR0A=1; //compare match when counter=1 (1919 times per second aprox.)=>0.5 miliseconds period aprox.
 TCNT0=0x00;     // set timer0 counter initial value to 0
 TIMSK0=2;// enable timer 0 output compare match 2
 TCCR0B=4;//divide frequency by 256
 sei(); // enable interrupts
 }
 int main(void) {
-	// set for 1 MHz clock
-	CPU_PRESCALE(4);
+	// set for 16 MHz clock
+	CPU_PRESCALE(0);
 	//configure_clock();
 	configure_beeper();
 	configure_simon();
@@ -156,16 +156,21 @@ int main(void) {
 
 configure_polling_interrupt();
 
-// {
-// 	int i;
-// 	for(i=4;i>=0;i--)
-// 	{
-// 		//play_tone(i);
-// 		//wait_for_miliseconds(500);
-// 		//nobeep;
-// 		//wait_for(1000);
-// 	}
-// }
+{
+	uint8_t i;
+	for(i=0;i<5;i++)
+	{
+		play_tone(i);
+		//active_wait(20);
+		//nobeep;
+
+		wait_for_miliseconds(50);
+		//_delay_ms(1);
+		//wait_for_miliseconds(500);
+		//nobeep;
+		//wait_for(1000);
+	}
+}
 
 	nobeep;
 	LED_OFF;
@@ -193,9 +198,10 @@ configure_polling_interrupt();
 //volatile uint16_t pullings_counter;
 //volatile uint8_t green_semaphore;
 
+volatile uint8_t timing_counter;
  ISR(TIMER0_COMPA_vect) {
 	// if(green_semaphore)
-	 	//pullings_counter++;
+	 timing_counter++;
  	 read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
  	 usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
 	 selected_player=(selected_player+1)%(NUMBER_OF_INTERFACES-1);

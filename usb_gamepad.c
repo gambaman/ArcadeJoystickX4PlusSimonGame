@@ -399,7 +399,7 @@ int8_t usb_gamepad_send(int8_t gamepad_number) {
 	intr_state = SREG;
 	cli();
 	UENUM = GAMEPAD_ENDPOINT(gamepad_number);
-	timeout = UDFNUML + 50;
+	timeout = UDFNUML + 1;
 	while (1) {
 		// are we ready to transmit?
 		if (UEINTX & (1<<RWAL)) break;
