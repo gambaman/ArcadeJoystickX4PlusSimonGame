@@ -118,7 +118,7 @@ sei(); // enable interrupts
 int main(void) {
 	// set for 16 MHz clock
 	CPU_PRESCALE(0);
-	//configure_clock();
+	configure_clock();
 	configure_beeper();
 	configure_simon();
 	// good explenation of how AVR pins work:
@@ -160,11 +160,12 @@ configure_polling_interrupt();
 	uint8_t i;
 	for(i=0;i<5;i++)
 	{
-		play_tone(i);
+		//play_tone(i);
+		LIGHTS_PORT=1<<i;
 		//active_wait(20);
 		//nobeep;
 
-		wait_for_miliseconds(50);
+		wait_for_miliseconds(1000);
 		//_delay_ms(1);
 		//wait_for_miliseconds(500);
 		//nobeep;
