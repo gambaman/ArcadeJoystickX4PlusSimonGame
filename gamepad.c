@@ -27,7 +27,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #define F_CPU 16000000UL // 1 MHz
-#include <util/delay.h>
 #include "usb_gamepad.h"
 
 #ifndef TIMING
@@ -121,8 +120,6 @@ int main(void) {
 	configure_clock();
 	configure_beeper();
 	configure_simon();
-	// good explenation of how AVR pins work:
-	// http://www.pjrc.com/teensy/pins.html
 
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
 	LIGHTS_DDR= LIGHTS_PINS_MASK; //set as output
@@ -131,10 +128,13 @@ int main(void) {
 	CENTRAL_BUTTON_DDR=0;//set as input
 	CENTRAL_BUTTON_PORT|=(1<<CENTRAL_BUTTON);//activate pull-up
 
-	//LIGHTS_PORT= LIGHTS_PINS_MASK;// turn all of them on
-
 	SELECTOR_DDR=SELECTOR_PINS_MASK;//set as output
 	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
+
+	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
+		usb_gamepad_reset_state(selected_player); //players will be reported as idle by default
+	selected_player=0;
+	select_gamepad(selected_player);
 
 	LED_CONFIG;
 	LED_ON; // power up led on startup for 1 sec
@@ -144,46 +144,29 @@ int main(void) {
 	// this will wait forever.
 	usb_init();
 	while (!usb_configured()) /* wait */ ;
-		_delay_ms(1000);
+	wait_for_miliseconds(1000);
 	// Wait an extra second for the PC's operating system to load drivers
 	// and do whatever it does to actually be ready for input
-	for(selected_player=0;selected_player<NUMBER_OF_INTERFACES;selected_player++)
-		usb_gamepad_reset_state(selected_player); //player 0 will be reported as idle by default
-	selected_player=0;
-	select_gamepad(selected_player);
-
-
-
-configure_polling_interrupt();
-
-{
-	uint8_t i;
-	for(i=0;i<5;i++)
-	{
-		//play_tone(i);
-		LIGHTS_PORT=1<<i;
-		//active_wait(20);
-		//nobeep;
-
-		wait_for_miliseconds(1000);
-		//_delay_ms(1);
-		//wait_for_miliseconds(500);
-		//nobeep;
-		//wait_for(1000);
-	}
-}
-
-	nobeep;
+	configure_polling_interrupt();
+// {
+// 	uint8_t i;
+// 	for(i=0;i<5;i++)
+// 	{
+// 		//play_tone(i);
+// 		LIGHTS_PORT=1<<i;
+// 		//active_wait(20);
+// 		//nobeep;
+//
+// 		wait_for_miliseconds(1000);
+// 		//_delay_ms(1);
+// 		//wait_for_miliseconds(500);
+// 		//nobeep;
+// 		//wait_for(1000);
+// 	}
+// }
+// 	nobeep;
 	LED_OFF;
 	while (1) {
-		// read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
-		// usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
-		// selected_player=(selected_player%NUMBER_OF_INTERFACES)+1;
-		// select_gamepad(selected_player);
-		//  wait_for(1000);
-		//  LED_ON;
-		//  wait_for(50);
-		//  LED_OFF;
 
 		if(is_active_pin(CENTRAL_BUTTON_PINS,CENTRAL_BUTTON))
 			LIGHTS_PORT|= LIGHTS_PINS_MASK;// turn all of them on
@@ -192,17 +175,8 @@ configure_polling_interrupt();
 
 	}
 }
-// ISR(TIMER0_COMPA_vect){
-// PORTD ^= (1<<6);//LED state changes
-// }
 
-//volatile uint16_t pullings_counter;
-//volatile uint8_t green_semaphore;
-
-volatile uint8_t timing_counter;
  ISR(TIMER0_COMPA_vect) {
-	// if(green_semaphore)
-	 timing_counter++;
  	 read_gamepad_state(GAMEPAD_INTERFACE(selected_player));
  	 usb_gamepad_send(GAMEPAD_INTERFACE(selected_player));
 	 selected_player=(selected_player+1)%(NUMBER_OF_INTERFACES-1);

@@ -21,15 +21,7 @@
 
 #define TIMING
 #include <stdint.h>
-// extern volatile uint8_t green_semaphore;
-// extern volatile uint16_t pullings_counter;
 void configure_clock(void);
 void count_miliseconds(uint16_t miliseconds);
-// void count(void);
 #define end_of_count (TIFR3&(1<<3))
-// void wait_for(uint16_t miliseconds);
-extern volatile uint8_t timing_counter;
-//void count_miliseconds(void);
-//uint8_t elapsed_miliseconds(void);
 void wait_for_miliseconds(uint16_t miliseconds_delay);
-void active_wait (uint8_t delay);

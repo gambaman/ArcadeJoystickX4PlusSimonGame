@@ -25,65 +25,24 @@
 
 #include <avr/io.h>
 
-// #define LSB(n) (n & 255)
-// #define MSB(n) ((n >> 8) & 255)
-
 void configure_clock(void)
 {
 	TCCR3A=_BV(WGM32);
 	TCCR3B=_BV(WGM33)|_BV(WGM32); //Compare match with ICR3
-// 	TCCR3B|=5;	//divide frequency by 1024 (15625 Hz)
 }
-#define timing_clock_base_frequency 15625UL
+#define timing_clock_base_frequency 15625UL// 	by executing TCCR3B|=5;	the frequency will be divided by 1024 (15625 Hz)
 
 void count_miliseconds(uint16_t miliseconds)
 {
 	TCCR3B&= ~7;//stop the counter
-	// uint16_t top_value;
-	// top_value=miliseconds-1;
-	// cli();//disable interrupts
-	// ICR3H=MSB(top_value);
-	// ICR3L=LSB(top_value);
 	ICR3= (timing_clock_base_frequency*miliseconds)/1000-1;
 	TCNT3=0;     // set timer3 counter initial value to 0
 	TIFR3|=1<<3;  // clear the compare match flag
 	TCCR3B|=5;	//Start counting dividing frequency by 1024 (15625 Hz)
-  // sei();//enable interrupts
-	//green_semaphore=0;
-	// initial_milisecond=pullings_counter>>1;
-	//initial_timestamp=timing_counter;
-	//green_semaphore=1;
 }
-//
-// uint8_t elapsed_miliseconds(void)
-// {
-// 	// uint16_t new_value,old_value;
-// 	// old_value=pullings_counter;
-// 	// new_value=pullings_counter;
-// 	// while(old_value==new_value) //wait for a change in the polling counter
-// 	// {
-// 	// 	old_value=new_value;
-// 	// 	new_value=pullings_counter;
-// 	// }
-// 	// green_semaphore=0;
-// 	// new_value=pullings_counter;
-// 	// green_semaphore=1;
-// 	return (timing_counter-initial_timestamp);
-// }
 
 void wait_for_miliseconds(uint16_t miliseconds_delay)
 {
 	count_miliseconds(miliseconds_delay);
 	while(!end_of_count);
-	// count_miliseconds();
-	// while(elapsed_miliseconds()<miliseconds_delay);
-	// return;
-}
-
-
-void active_wait (uint8_t delay)
-{
-	volatile uint8_t counter;
-	for(counter=0;counter<delay;counter++);
-	return;
 }
