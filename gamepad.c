@@ -91,6 +91,7 @@ uint8_t axis_value(uint8_t port,uint8_t decrement_pin, uint8_t increment_pin)
 
 volatile uint8_t scaned_gamepad;
 volatile uint8_t master_gamepad;
+volatile uint8_t light_buttons_values;
 
 void read_gamepad_state(uint8_t gamepad)
 {
@@ -99,8 +100,6 @@ void read_gamepad_state(uint8_t gamepad)
 	(*state_to_modify).y_axis =	axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
 	(*state_to_modify).x_axis = axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 }
-
-//#define select_gamepad(x) SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<(x+1))
 
 void select_gamepad(uint8_t gamepad)
 {
@@ -186,18 +185,27 @@ int main(void) {
 // 	nobeep;
 	LED_OFF;
 	while (1) {
+		//
+		// if(is_active_pin(CENTRAL_BUTTON_PINS,CENTRAL_BUTTON))
+		// 	LIGHTS_PORT|= LIGHTS_PINS_MASK;// turn all of them on
+		// else
+		// 	LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
 
-		if(is_active_pin(CENTRAL_BUTTON_PINS,CENTRAL_BUTTON))
-			LIGHTS_PORT|= LIGHTS_PINS_MASK;// turn all of them on
-		else
-			LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
-
+		LIGHTS_PORT=light_buttons_values<<1;//for debugging
 	}
 }
 
- ISR(TIMER0_COMPA_vect) {
+ISR(TIMER0_COMPA_vect)
+{
+	 uint8_t selected_light_button_mask=1<<scaned_gamepad;
  	 read_gamepad_state(GAMEPAD_INTERFACE(scaned_gamepad));
  	 usb_gamepad_send(GAMEPAD_INTERFACE(scaned_gamepad));
+	 light_buttons_values&=~selected_light_button_mask;
+	 if(
+		 scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7)) ||
+	 	 scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
+	 	)
+		 light_buttons_values|=selected_light_button_mask;
 	 scaned_gamepad=(scaned_gamepad+1)%NUMBER_OF_INTERFACES;
 	 select_gamepad(scaned_gamepad);
  }
