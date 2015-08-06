@@ -215,26 +215,28 @@ int main(void) {
 		// 	LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
 		//LIGHTS_PORT=light_buttons_values<<1;//for debugging
 		//while(!light_buttons_values);//wait till a special light button is pressed
-		if(pressed_central_button)//master player change or Simon game request
+		while(pressed_central_button)//master player change or Simon game request
 			{
-				turn_off_color_button_lights;
-				master_gamepad=VIRTUAL_GAMEPAD_ID;
-				turn_on_central_button_light;//for debugging
-				do
+				for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
 				{
-					skip_bounces;
-					for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
-					{
-									if(pressed_light_button(i))//select this button as master button
-									{
+						if(pressed_light_button(i))
+						{		skip_bounces;
+								turn_off_color_button_lights;
+								if(i!=master_gamepad)//select this button as master button
+								{
 											master_gamepad=i;
-											turn_off_color_button_lights;
 											turn_on_color_button_light(i);
 											turn_off_central_button_light;//for debugging
-
-									}
+								}
+								else//deselect this button as master button
+								{
+											master_gamepad=VIRTUAL_GAMEPAD_ID;
+											turn_on_central_button_light;//for debugging
+								}
+								while(pressed_light_button(i));
+								skip_bounces;
 						}
-				}while(pressed_central_button);
+				}
 			}
 	}/////////////////jarrrrrr
 	// else//insert coin request
