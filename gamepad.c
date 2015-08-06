@@ -115,6 +115,16 @@ void read_gamepad_state(void)
 					memcpy(&gamepad_state[VIRTUAL_GAMEPAD_ID], &tmp, sizeof(gamepad_state_t));
 	else
 		memcpy(&gamepad_state[master_gamepad], &tmp, sizeof(gamepad_state_t));
+
+	uint8_t selected_light_button_mask=1<<scaned_gamepad;
+	light_buttons_values&=~selected_light_button_mask;
+
+	if(
+				 scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
+		//|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
+	 )
+		light_buttons_values|=selected_light_button_mask;
+
 }
 
 void select_gamepad(void)
@@ -233,15 +243,8 @@ int main(void) {
 
 ISR(TIMER0_COMPA_vect)
 {
-	 uint8_t selected_light_button_mask=1<<scaned_gamepad;
  	 read_gamepad_state();
  	 usb_gamepad_send(GAMEPAD_INTERFACE(scaned_gamepad));
-	 light_buttons_values&=~selected_light_button_mask;
-	 if(
-		 			scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
-		 //|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
-	 	)
-		 light_buttons_values|=selected_light_button_mask;
 	 scaned_gamepad=(scaned_gamepad+1)%NUMBER_OF_INTERFACES;
 	 select_gamepad();
  }
