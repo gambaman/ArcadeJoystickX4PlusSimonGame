@@ -103,39 +103,22 @@ volatile uint8_t light_buttons_values;
 
 void read_gamepad_state(void)
 {
-	uint8_t tmp_buttons,tmp_y_axis,tmp_x_axis;
-	tmp_buttons=~BUTTONS_PINS;
-	tmp_y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
-	tmp_x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
+	gamepad_state_t tmp;
+	tmp.buttons=~BUTTONS_PINS;
+	tmp.y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
+	tmp.x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 
 	if(scaned_gamepad!=VIRTUAL_GAMEPAD_ID)
 				if(scaned_gamepad!=master_gamepad)
-					{
-						gamepad_state[scaned_gamepad].buttons=tmp_buttons;
-						gamepad_state[scaned_gamepad].y_axis =tmp_y_axis;
-						gamepad_state[scaned_gamepad].x_axis =tmp_x_axis;
-					}
+					memcpy(&gamepad_state[scaned_gamepad], &tmp, sizeof(gamepad_state_t));
 				else
-					{
-						gamepad_state[VIRTUAL_GAMEPAD_ID].buttons=tmp_buttons;
-						gamepad_state[VIRTUAL_GAMEPAD_ID].y_axis =tmp_y_axis;
-						gamepad_state[VIRTUAL_GAMEPAD_ID].x_axis =tmp_x_axis;
-					}
+					memcpy(&gamepad_state[VIRTUAL_GAMEPAD_ID], &tmp, sizeof(gamepad_state_t));
 	else
-		{
-			gamepad_state[master_gamepad].buttons=tmp_buttons;
-			gamepad_state[master_gamepad].y_axis =tmp_y_axis;
-			gamepad_state[master_gamepad].x_axis =tmp_x_axis;
-		}
-
+		memcpy(&gamepad_state[master_gamepad], &tmp, sizeof(gamepad_state_t));
 }
 
 void select_gamepad(void)
 {
-	// uint8_t scanning_virtual_gamepad= (gamepad==VIRTUAL_GAMEPAD_ID);//requesting data for the virtual gamepad
-	// uint8_t a_gamepad_has_been_selectes_as_master= (master_gamepad<VIRTUAL_GAMEPAD_ID);
-	// uint8_t real_gamepad_to_read= scanning_virtual_gamepad? master_gamepad : gamepad;
-	// uint8_t no_real_data_to_be_transmited=scanning_virtual_gamepad && !a_gamepad_has_been_selectes_as_master || !scanning_virtual_gamepad && gamepad==master_gamepad;
 	SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<(scaned_gamepad+1));
 }
 
@@ -179,7 +162,7 @@ int main(void) {
 	for(scaned_gamepad=0;scaned_gamepad<NUMBER_OF_INTERFACES;scaned_gamepad++)
 		usb_gamepad_reset_state(scaned_gamepad); //players will be reported as idle by default
 	scaned_gamepad=0;
-	master_gamepad=2;//VIRTUAL_GAMEPAD_ID;
+	master_gamepad=VIRTUAL_GAMEPAD_ID;
 	light_buttons_values=0;
 	select_gamepad();
 
