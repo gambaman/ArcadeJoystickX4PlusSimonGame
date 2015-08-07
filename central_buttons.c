@@ -11,6 +11,7 @@ void configure_central_buttons(void)
 
 void wait_till_depressed_button(uint8_t x)
 {
+  //skip_bounces;
   while(pressed_light_button(x));
-  skip_bounces;
+  //skip_bounces;
 }

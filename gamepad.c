@@ -203,7 +203,7 @@ int main(void) {
 				for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
 				{
 						if(pressed_light_button(i))
-						{		skip_bounces;
+						{		
 								turn_off_color_button_lights;
 								if(i!=master_gamepad)//select this button as master button
 								{
