@@ -15,3 +15,10 @@ void wait_till_depressed_button(uint8_t x)
   while(pressed_light_button(x));
   //skip_bounces;
 }
+
+void wait_till_depressed_all_color_buttons()
+{
+  //skip_bounces;
+  while(pressed_color_buttons);
+  //skip_bounces;
+}

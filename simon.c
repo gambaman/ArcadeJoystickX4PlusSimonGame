@@ -11,6 +11,15 @@
 #include "timing.h"
 #endif
 
+#define tone_duration1 420//miliseconds
+#define tone_duration2 320//miliseconds
+#define tone_duration3 220//miliseconds
+#define pause_duration 50//miliseconds
+#define pressing_tone_duration 100//miliseconds
+#define time_out 3000//miliseconds
+#define lossing_tone_duration 1500//miliseconds
+#define intersequence_pause_duration 800//miliseconds
+
 uint16_t tones[5];
 
 void configure_simon(void)
@@ -40,12 +49,42 @@ void play_button_for(uint8_t button_number,uint16_t time)
 
 void play_sequence(uint8_t sequence[],uint8_t length)
 {
-		uint16_t beep_duration= length<=5? 420 : length<=13? 320 : 200;//miliseconds
+		uint16_t beep_duration= length<=5? tone_duration1 : length<=13? tone_duration2 : tone_duration1;
 		for(uint8_t i=0;i<length;i++)
 		{
 			play_button_for(sequence[i],beep_duration);
-			wait_for_miliseconds(50);
+			wait_for_miliseconds(pause_duration);
 		}
+}
+
+uint8_t rigtht_sequence(uint8_t sequence[],uint8_t length)
+{
+		for(uint8_t i=0;i<length;i++)
+			if(wrong_button(sequence[i]))
+				return 0;
+		return 1;
+}
+
+uint8_t wrong_button(uint8_t button)
+{
+	count_miliseconds(time_out);
+	//wait_till_depressed_all_color_buttons();
+	while(!end_of_count)
+		if(pressed_color_buttons)
+		{
+			if(pressed_only_button(button))
+			{
+				play_button_for(button,pressing_tone_duration);
+				return 0;
+			}
+			else
+				break;
+		}
+	LIGHTS_PORT=(light_buttons_values<<1) & ~1;//right button not pressed
+	play_tone(0);
+	wait_for_miliseconds(lossing_tone_duration);
+	nobeep;
+	return 1;
 }
 
 uint8_t simon_game(uint8_t skill_level)
@@ -61,10 +100,22 @@ uint8_t simon_game(uint8_t skill_level)
 	{
 		sequence[current_length++]=random_value;
 		play_sequence(sequence,current_length);
-		wait_for_miliseconds(1000);//for debugging
-		// for(i=0;victory && i<current_length;i++)
-		// 	victory=pressed_correct_button(i);
+		if(!rigtht_sequence(sequence,current_length))
+			victory=0;
+		wait_for_miliseconds(intersequence_pause_duration);
 	}
+	if(victory)
+		for(uint8_t i=0;i<5;i++)//victory melody
+		{
+			if(i)
+			{
+				wait_for_miliseconds(20);
+				play_button_for(sequence[sequence_length-1],70);
+
+			}
+			else
+				play_button_for(sequence[sequence_length-1],20);
+		}
 	LIGHTS_PORT=previous_lights_value;
 	return victory;
 }

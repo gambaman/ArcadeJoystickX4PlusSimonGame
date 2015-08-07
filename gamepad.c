@@ -112,7 +112,6 @@ void read_gamepad_state(void)
 		|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
 	 )
 		light_buttons_values|=selected_light_button_mask;
-
 }
 
 void select_gamepad(void)
@@ -225,9 +224,9 @@ int main(void) {
 							}
 					}while(pressed_central_button);
 					if(!color_button_has_been_pressed)//a Simon game session has been requested
-						simon_game(4);
+						simon_game(1);
 			}
-	}/////////////////jarrrrrr
+	}
 	// else//insert coin request
 	// 	;
 }
