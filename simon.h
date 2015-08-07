@@ -1,3 +1,5 @@
+#define SIMON
+
 #ifndef SOUND
 #include "sound.h"
 #endif

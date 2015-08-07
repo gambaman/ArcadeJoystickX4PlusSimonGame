@@ -13,6 +13,7 @@
 # Sander Pool
 # Frederik Rouleau
 # Carlos Lamas
+# David Guerrero
 #
 #----------------------------------------------------------------------------
 # On command line:
@@ -49,7 +50,8 @@ SRC =	$(TARGET).c \
 	usb_gamepad.c \
 	timing.c \
 	sound.c \
-	simon.c
+	simon.c \
+	central_buttons.c
 
 
 # MCU name, you MUST set this to match the board you are using

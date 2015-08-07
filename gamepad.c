@@ -26,6 +26,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <string.h>
 #define F_CPU 16000000UL // 1 MHz
 #include "usb_gamepad.h"
 
@@ -35,6 +36,10 @@
 
 #ifndef SOUND
 #include "sound.h"
+#endif
+
+#ifndef CENTRAL_BUTTONS
+#include "central_buttons.h"
 #endif
 
 #ifndef SIMON
@@ -70,16 +75,6 @@
 #define BUTTONS_PORT	PORTF
 #define BUTTONS_PINS	PINF
 
-#define CENTRAL_BUTTON_DDR DDRE
-#define CENTRAL_BUTTON_PORT PORTE
-#define CENTRAL_BUTTON_PINS PINE
-#define CENTRAL_BUTTON 6
-
-#define LIGHTS_DDR	DDRD
-#define LIGHTS_PORT	PORTD
-#define LIGHTS_PINS	PIND
-#define LIGHTS_PINS_MASK ((1<<(NUMBER_OF_INTERFACES+1))-1) //There is a LIGHT per player plus the central one
-
 uint8_t axis_value(uint8_t port,uint8_t decrement_pin, uint8_t increment_pin)
 {
 	if(is_active_pin(port,increment_pin))
@@ -92,14 +87,6 @@ uint8_t axis_value(uint8_t port,uint8_t decrement_pin, uint8_t increment_pin)
 volatile uint8_t scaned_gamepad;
 volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
-#define pressed_light_button(x) (light_buttons_values&(1<<x))
-//#define pressed_central_button pressed_light_button(VIRTUAL_GAMEPAD_ID)
-#define pressed_central_button (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
-#define turn_on_color_button_light(x) LIGHTS_PORT|= 1<<(x+1)
-#define turn_on_central_button_light LIGHTS_PORT|= 1
-#define turn_off_color_button_lights LIGHTS_PORT&= ~(((1<<(NUMBER_OF_INTERFACES))-1)<<1)
-#define turn_off_central_button_light LIGHTS_PORT&= ~1
-#define skip_bounces wait_for_miliseconds(50)
 
 void read_gamepad_state(void)
 {
@@ -120,8 +107,8 @@ void read_gamepad_state(void)
 	light_buttons_values&=~selected_light_button_mask;
 
 	if(
-				 scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
-		//|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
+			 scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
+		|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
 	 )
 		light_buttons_values|=selected_light_button_mask;
 
@@ -157,26 +144,22 @@ int main(void) {
 	CPU_PRESCALE(0);
 	configure_clock();
 	configure_beeper();
+	configure_central_buttons();
 	configure_simon();
+	LED_CONFIG;
 
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
-	LIGHTS_DDR= LIGHTS_PINS_MASK; //set as output
 	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pull-up
-
-	CENTRAL_BUTTON_DDR=0;//set as input
-	CENTRAL_BUTTON_PORT|=(1<<CENTRAL_BUTTON);//activate pull-up
-
 	SELECTOR_DDR=SELECTOR_PINS_MASK;//set as output
 	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
 
 	for(scaned_gamepad=0;scaned_gamepad<NUMBER_OF_INTERFACES;scaned_gamepad++)
 		usb_gamepad_reset_state(scaned_gamepad); //players will be reported as idle by default
 	scaned_gamepad=0;
+	select_gamepad();
 	master_gamepad=VIRTUAL_GAMEPAD_ID;
 	light_buttons_values=0;
-	select_gamepad();
 
-	LED_CONFIG;
 	LED_ON; // power up led on startup for 1 sec
 
 	// Initialize the USB, and then wait for the host to set configuration.
@@ -215,7 +198,7 @@ int main(void) {
 		// 	LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
 		//LIGHTS_PORT=light_buttons_values<<1;//for debugging
 		//while(!light_buttons_values);//wait till a special light button is pressed
-		while(pressed_central_button)//master player change or Simon game request
+		if(pressed_central_button)//master player change or Simon game request
 			{
 				for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
 				{
@@ -233,8 +216,7 @@ int main(void) {
 											master_gamepad=VIRTUAL_GAMEPAD_ID;
 											turn_on_central_button_light;//for debugging
 								}
-								while(pressed_light_button(i));
-								skip_bounces;
+								wait_till_depressed_button(i);
 						}
 				}
 			}
