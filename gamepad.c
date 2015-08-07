@@ -87,6 +87,7 @@ uint8_t axis_value(uint8_t port,uint8_t decrement_pin, uint8_t increment_pin)
 volatile uint8_t scaned_gamepad;
 volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
+volatile uint8_t random_value;
 
 void read_gamepad_state(void)
 {
@@ -200,25 +201,31 @@ int main(void) {
 		//while(!light_buttons_values);//wait till a special light button is pressed
 		if(pressed_central_button)//master player change or Simon game request
 			{
-				for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
-				{
-						if(pressed_light_button(i))
-						{		
-								turn_off_color_button_lights;
-								if(i!=master_gamepad)//select this button as master button
-								{
-											master_gamepad=i;
-											turn_on_color_button_light(i);
-											turn_off_central_button_light;//for debugging
-								}
-								else//deselect this button as master button
-								{
-											master_gamepad=VIRTUAL_GAMEPAD_ID;
-											turn_on_central_button_light;//for debugging
-								}
-								wait_till_depressed_button(i);
-						}
-				}
+				uint8_t color_button_has_been_pressed=0;
+				do{
+							for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
+							{
+									if(pressed_light_button(i))
+									{
+											color_button_has_been_pressed=1;
+											turn_off_color_button_lights;
+											if(i!=master_gamepad)//select this button as master button
+											{
+														master_gamepad=i;
+														turn_on_color_button_light(i);
+														turn_off_central_button_light;//for debugging
+											}
+											else//deselect this button as master button
+											{
+														master_gamepad=VIRTUAL_GAMEPAD_ID;
+														turn_on_central_button_light;//for debugging
+											}
+											wait_till_depressed_button(i);
+									}
+							}
+					}while(pressed_central_button);
+					if(!color_button_has_been_pressed)//a Simon game session has been requested
+						simon_game(4);
 			}
 	}/////////////////jarrrrrr
 	// else//insert coin request
@@ -231,4 +238,6 @@ ISR(TIMER0_COMPA_vect)
  	 usb_gamepad_send(GAMEPAD_INTERFACE(scaned_gamepad));
 	 scaned_gamepad=(scaned_gamepad+1)%NUMBER_OF_INTERFACES;
 	 select_gamepad();
+	 random_value++;
+	 random_value&=3;
  }

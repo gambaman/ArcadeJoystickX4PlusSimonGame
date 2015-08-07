@@ -34,8 +34,13 @@ void configure_clock(void)
 
 void count_miliseconds(uint16_t miliseconds)
 {
+	uint32_t ICR3_value;
 	TCCR3B&= ~7;//stop the counter
-	ICR3= (timing_clock_base_frequency*miliseconds)/1000-1;
+	ICR3_value=timing_clock_base_frequency*miliseconds;
+	ICR3_value/=1000;
+	//ICR3= ((uint32_t)timing_clock_base_frequency*miliseconds)/10000-1;
+	ICR3H=ICR3_value>>8;
+	ICR3L=ICR3_value&255;
 	TCNT3=0;     // set timer3 counter initial value to 0
 	TIFR3|=1<<3;  // clear the compare match flag
 	TCCR3B|=5;	//Start counting dividing frequency by 1024 (15625 Hz)
