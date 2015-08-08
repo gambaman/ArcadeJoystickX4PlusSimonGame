@@ -116,7 +116,7 @@ uint8_t wrong_button(uint8_t button)
 }
 
 uint8_t simon_game(uint8_t skill_level)
-{
+{	return 1;//for debugging
 	uint8_t current_length;
 	uint8_t previous_lights_value=LIGHTS_PORT;
 	uint8_t victory=1;																					//skill_level 0- sequence length=0 (inmediate victory)

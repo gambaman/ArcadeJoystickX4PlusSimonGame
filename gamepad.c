@@ -89,13 +89,21 @@ volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
 volatile uint8_t random_value;
 volatile uint8_t players_inserting_coins;
+volatile uint8_t inserting_coins_pulse_counter;
+
 uint32_t credits;
 
 void read_gamepad_state(void)
 {
 	gamepad_state_t tmp;
-	tmp.buttons=~BUTTONS_PINS & ~(1<<7);
+	tmp.buttons=(~BUTTONS_PINS) & (~(1<<7));
 	//by default the insert coin button is reported as not pressed
+	if(players_inserting_coins==scaned_gamepad)
+	{
+		tmp.buttons|=(1<<7);
+		if(--inserting_coins_pulse_counter==0)
+			players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
+	}
 	tmp.y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
 	tmp.x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 
@@ -156,6 +164,7 @@ int main(void) {
 	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
 
 	credits=0;
+	players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins
 
 	for(scaned_gamepad=0;scaned_gamepad<NUMBER_OF_INTERFACES;scaned_gamepad++)
 		usb_gamepad_reset_state(scaned_gamepad); //players will be reported as idle by default
@@ -229,26 +238,30 @@ int main(void) {
 			}
 			else
 			{
-
-						if(pressed_color_buttons)//insert coin request
+				for(uint8_t i=0;i<4;i++)
+						if(pressed_light_button(i))//insert coin request
 						{
-							if(!credits || scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (light_buttons_values & (1<<(master_gamepad))) )
-							//the player associated to the master joystick cannot insert coins
-							{
-								play_tone(0);
+								if(!credits || i==master_gamepad)//the player associated to the master joystick cannot insert coins
+								{
+											play_tone(0);
+											while(pressed_color_buttons);
+											nobeep;
+								}
+								else
+								{
+											players_inserting_coins=i;
+											inserting_coins_pulse_counter=50;
+											if(!free_play)
+											{
+												credits--;
+												if(!credits)
+													turn_off_central_button_light;
+											}
+								}
 								while(pressed_color_buttons);
-								nobeep;
-							}
-							else//insert coin for the requesting player
-								for(uint8_t i=0;i<4;i++)
-									if(pressed_light_button(i))
-									{
-										players_inserting_coins=1<<i;
-										if(!free_play)
-											credits--;
-										while(pressed_color_buttons);
-									}
-							}
+						}
+
+
 				}
 	}
 }
