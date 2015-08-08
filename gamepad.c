@@ -88,12 +88,14 @@ volatile uint8_t scaned_gamepad;
 volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
 volatile uint8_t random_value;
+volatile uint8_t players_inserting_coins;
 uint32_t credits;
 
 void read_gamepad_state(void)
 {
 	gamepad_state_t tmp;
-	tmp.buttons=~BUTTONS_PINS;
+	tmp.buttons=~BUTTONS_PINS & ~(1<<7);
+	//by default the insert coin button is reported as not pressed
 	tmp.y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
 	tmp.x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
 
@@ -108,9 +110,8 @@ void read_gamepad_state(void)
 	uint8_t selected_light_button_mask=1<<scaned_gamepad;
 	light_buttons_values&=~selected_light_button_mask;
 
-	if(
-			 scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
-		|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
+	if( scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
+		//|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
 	 )
 		light_buttons_values|=selected_light_button_mask;
 }
@@ -194,16 +195,7 @@ int main(void) {
 	LED_OFF;
 	while (1)
 	{
-		//
-		// if(is_active_pin(CENTRAL_BUTTON_PINS,CENTRAL_BUTTON))
-		// 	LIGHTS_PORT|= LIGHTS_PINS_MASK;// turn all of them on
-		// else
-		// 	LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
-		//LIGHTS_PORT=light_buttons_values<<1;//for debugging
-		//while(!light_buttons_values);//wait till a special light button is pressed
-		if(free_play)
-			toggle_central_button_light;
-		if(pressed_central_button)//master player change or Simon game request
+			if(pressed_central_button)//master player change or Simon game request
 			{
 				uint8_t color_button_has_been_pressed=0;
 				do{
@@ -235,11 +227,30 @@ int main(void) {
 							turn_on_central_button_light;
 					}
 			}
-			if(free_play)									//this is
-				LIGHTS_PORT=~LIGHTS_PORT;		//just for debugging
+			else
+			{
+
+						if(pressed_color_buttons)//insert coin request
+						{
+							if(!credits || scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (light_buttons_values & (1<<(master_gamepad))) )
+							//the player associated to the master joystick cannot insert coins
+							{
+								play_tone(0);
+								while(pressed_color_buttons);
+								nobeep;
+							}
+							else//insert coin for the requesting player
+								for(uint8_t i=0;i<4;i++)
+									if(pressed_light_button(i))
+									{
+										players_inserting_coins=1<<i;
+										if(!free_play)
+											credits--;
+										while(pressed_color_buttons);
+									}
+							}
+				}
 	}
-	// else//insert coin request
-	// 	;
 }
 
 ISR(TIMER0_COMPA_vect)

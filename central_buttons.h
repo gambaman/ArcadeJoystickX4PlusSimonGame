@@ -25,8 +25,8 @@ extern volatile uint8_t light_buttons_values;
 #define pressed_light_button(x) (light_buttons_values&(1<<x))
 #define pressed_only_button(x) (light_buttons_values==1<<x)
 #define pressed_color_buttons (light_buttons_values & COLOR_PINS_MASK)
-#define pressed_central_button pressed_light_button (VIRTUAL_GAMEPAD_ID)
-//#define pressed_central_button (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
+//#define pressed_central_button pressed_light_button (VIRTUAL_GAMEPAD_ID)
+#define pressed_central_button (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
 #define turn_on_color_button_light(x) LIGHTS_PORT|= 1<<(x+1)
 #define toggle_color_button_light(x) LIGHTS_PORT^= 1<<(x+1)
 #define turn_on_central_button_light LIGHTS_PORT|= 1
