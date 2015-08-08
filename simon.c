@@ -99,7 +99,7 @@ uint8_t wrong_button(uint8_t button)
 			else
 				break;
 		}
-	LIGHTS_PORT=(light_buttons_values<<1) & ~1;//right button not pressed
+	LIGHTS_PORT|=(light_buttons_values<<1) & ~1;//right button not pressed
 	play_tone(0);
 	wait_for_miliseconds(lossing_tone_duration);
 	play_button_five_times(button);

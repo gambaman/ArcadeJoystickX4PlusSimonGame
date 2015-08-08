@@ -141,6 +141,7 @@ sei(); // enable interrupts
 }
 int main(void) {
 	// set for 16 MHz clock
+	uint16_t credits=0;
 	CPU_PRESCALE(0);
 	configure_clock();
 	configure_beeper();
@@ -212,19 +213,23 @@ int main(void) {
 											{
 														master_gamepad=i;
 														turn_on_color_button_light(i);
-														turn_off_central_button_light;//for debugging
+														//turn_off_central_button_light;//for debugging
 											}
 											else//deselect this button as master button
 											{
 														master_gamepad=VIRTUAL_GAMEPAD_ID;
-														turn_on_central_button_light;//for debugging
+														//turn_on_central_button_light;//for debugging
 											}
 											wait_till_depressed_button(i);
 									}
 							}
 					}while(pressed_central_button);
 					if(!color_button_has_been_pressed)//a Simon game session has been requested
-						simon_game(1);
+					{
+						credits+=simon_game(1);
+						if(credits)
+							turn_on_central_button_light;
+					}
 			}
 	}
 	// else//insert coin request
