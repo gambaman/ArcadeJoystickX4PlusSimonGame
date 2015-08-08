@@ -11,16 +11,27 @@
 #include "timing.h"
 #endif
 
-#define tone_duration1 420//miliseconds
-#define tone_duration2 320//miliseconds
-#define tone_duration3 220//miliseconds
-#define pause_duration 50//miliseconds
-#define pressing_tone_duration 100//miliseconds
+// #define tone_duration1 420//miliseconds
+// #define tone_duration2 320//miliseconds
+// #define tone_duration3 220//miliseconds
+// #define pause_duration 50//miliseconds
+// #define pressing_tone_duration 100//miliseconds
+// #define time_out 3000//miliseconds
+// #define lossing_tone_duration 1500//miliseconds
+// #define intersequence_pause_duration 700//miliseconds
+//////////////////////////////////////////////////////////////////
+#define tone_duration1 42//miliseconds
+#define tone_duration2 32//miliseconds
+#define tone_duration3 22//miliseconds
+#define pause_duration 5//miliseconds
+#define pressing_tone_duration 10//miliseconds
 #define time_out 3000//miliseconds
 #define lossing_tone_duration 1500//miliseconds
-#define intersequence_pause_duration 800//miliseconds
+#define intersequence_pause_duration 700//miliseconds
+//////////////////////////////////////////////////////////////////
 
 uint16_t tones[5];
+uint8_t sequence[31];
 
 void configure_simon(void)
 {
@@ -47,6 +58,14 @@ void play_button_for(uint8_t button_number,uint16_t time)
 	nobeep;
 }
 
+void play_button_five_times(uint8_t button_number)
+{
+	for(uint8_t i=0;i<5;i++)//repeat last tone five times
+		{
+				wait_for_miliseconds(1);
+				play_button_for(button_number,1);
+		}
+}
 void play_sequence(uint8_t sequence[],uint8_t length)
 {
 		uint16_t beep_duration= length<=5? tone_duration1 : length<=13? tone_duration2 : tone_duration1;
@@ -83,20 +102,20 @@ uint8_t wrong_button(uint8_t button)
 	LIGHTS_PORT=(light_buttons_values<<1) & ~1;//right button not pressed
 	play_tone(0);
 	wait_for_miliseconds(lossing_tone_duration);
-	nobeep;
+	play_button_five_times(button);
 	return 1;
 }
 
 uint8_t simon_game(uint8_t skill_level)
 {
+	uint8_t current_length;
 	uint8_t previous_lights_value=LIGHTS_PORT;
-	uint8_t sequence[31];
 	uint8_t victory=1;																					//skill_level 0- sequence length=0 (inmediate victory)
 	uint8_t sequence_length=0;																	//skill_level 1- sequence length=8
 	if(skill_level)																							//skill_level 2- sequence length=14
 		sequence_length= skill_level>=4? 31 : 2+6*skill_level;		//skill_level 3- sequence length=20
 																															//skill_level 4 and above- sequence length=31
-	for(uint8_t current_length=0;victory && current_length<sequence_length;)
+	for(current_length=0;victory && current_length<sequence_length;)
 	{
 		sequence[current_length++]=random_value;
 		play_sequence(sequence,current_length);
@@ -105,17 +124,8 @@ uint8_t simon_game(uint8_t skill_level)
 		wait_for_miliseconds(intersequence_pause_duration);
 	}
 	if(victory)
-		for(uint8_t i=0;i<5;i++)//victory melody
-		{
-			if(i)
-			{
-				wait_for_miliseconds(20);
-				play_button_for(sequence[sequence_length-1],70);
-
-			}
-			else
-				play_button_for(sequence[sequence_length-1],20);
-		}
+		play_button_five_times(sequence[current_length-1]);
 	LIGHTS_PORT=previous_lights_value;
-	return victory;
+
+	return victory? 1<<skill_level : 0;
 }
