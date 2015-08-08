@@ -11,6 +11,8 @@
 #include "timing.h"
 #endif
 
+extern uint32_t credits;
+
 // #define tone_duration1 420//miliseconds
 // #define tone_duration2 320//miliseconds
 // #define tone_duration3 220//miliseconds
@@ -18,7 +20,7 @@
 // #define pressing_tone_duration 100//miliseconds
 // #define time_out 3000//miliseconds
 // #define lossing_tone_duration 1500//miliseconds
-// #define intersequence_pause_duration 700//miliseconds
+// #define intersequence_pause_duration 800//miliseconds
 //////////////////////////////////////////////////////////////////
 #define tone_duration1 42//miliseconds
 #define tone_duration2 32//miliseconds
@@ -30,7 +32,7 @@
 #define intersequence_pause_duration 700//miliseconds
 //////////////////////////////////////////////////////////////////
 
-uint16_t tones[5];
+uint16_t tones[6];
 uint8_t sequence[31];
 
 void configure_simon(void)
@@ -41,6 +43,7 @@ void configure_simon(void)
 	tones[2]=252;		//yellow frequency in Hertzs
 	tones[3]=415;		//green frequency in Hertzs
 	tones[4]=310;		//red frequency in Hertzs
+	tones[5]=600;		//victory frequency in Hertzs
 }
 
 void play_button(uint8_t button_number)
@@ -60,11 +63,17 @@ void play_button_for(uint8_t button_number,uint16_t time)
 
 void play_button_five_times(uint8_t button_number)
 {
-	for(uint8_t i=0;i<5;i++)//repeat last tone five times
+	// for(uint8_t i=0;i<5;i++)//repeat last tone five times
+	// 	{
+	// 			wait_for_miliseconds(1);
+	// 			play_button_for(button_number,0);
+	// 	}
+		for(uint8_t i=0;i<6;i++)
 		{
-				wait_for_miliseconds(1);
-				play_button_for(button_number,1);
+			toggle_color_button_light(button_number);
+			play_tone(button_number);
 		}
+		nobeep;
 }
 void play_sequence(uint8_t sequence[],uint8_t length)
 {
@@ -124,8 +133,15 @@ uint8_t simon_game(uint8_t skill_level)
 		wait_for_miliseconds(intersequence_pause_duration);
 	}
 	if(victory)
-		play_button_five_times(sequence[current_length-1]);
+	{
+			for(uint8_t i=0;i<6;i++)
+			{
+				toggle_central_button_light;
+				play_tone(5);
+			}
+			nobeep;
+	}
+		//play_button_five_times(sequence[current_length-1]);
 	LIGHTS_PORT=previous_lights_value;
-
-	return victory? 1<<skill_level : 0;
+	return !victory? 0 : skill_level>3? ~credits : 1<<((skill_level-1)<<1);
 }

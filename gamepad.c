@@ -88,6 +88,7 @@ volatile uint8_t scaned_gamepad;
 volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
 volatile uint8_t random_value;
+uint32_t credits;
 
 void read_gamepad_state(void)
 {
@@ -141,18 +142,19 @@ sei(); // enable interrupts
 }
 int main(void) {
 	// set for 16 MHz clock
-	uint16_t credits=0;
+	#define free_play (!~credits) //The "infinite" value is represented by a word with all bits set
 	CPU_PRESCALE(0);
 	configure_clock();
 	configure_beeper();
 	configure_central_buttons();
 	configure_simon();
 	LED_CONFIG;
-
 	BUTTONS_DDR=  0;DIRECTION_DDR=  0; //set as input
 	BUTTONS_PORT=  0xff; DIRECTION_PORT|=DIRECTION_PINS_MASK; MCUCR&=~(1<<4); //activate pull-up
 	SELECTOR_DDR=SELECTOR_PINS_MASK;//set as output
 	SELECTOR_PORT=SELECTOR_PINS_MASK;//no gamepad selected, deactivate pullups
+
+	credits=0;
 
 	for(scaned_gamepad=0;scaned_gamepad<NUMBER_OF_INTERFACES;scaned_gamepad++)
 		usb_gamepad_reset_state(scaned_gamepad); //players will be reported as idle by default
@@ -199,6 +201,8 @@ int main(void) {
 		// 	LIGHTS_PORT&= ~LIGHTS_PINS_MASK;// turn all of them off
 		//LIGHTS_PORT=light_buttons_values<<1;//for debugging
 		//while(!light_buttons_values);//wait till a special light button is pressed
+		if(free_play)
+			toggle_central_button_light;
 		if(pressed_central_button)//master player change or Simon game request
 			{
 				uint8_t color_button_has_been_pressed=0;
@@ -231,6 +235,8 @@ int main(void) {
 							turn_on_central_button_light;
 					}
 			}
+			if(free_play)									//this is
+				LIGHTS_PORT=~LIGHTS_PORT;		//just for debugging
 	}
 	// else//insert coin request
 	// 	;
