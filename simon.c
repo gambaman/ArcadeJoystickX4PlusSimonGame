@@ -115,10 +115,19 @@ uint8_t wrong_button(uint8_t button)
 	return 1;
 }
 
-uint8_t simon_game(uint8_t skill_level)
-{	
-	uint8_t current_length;
+uint8_t select_skill_level(void)
+{
+	turn_on_all_color_button_lights;
+	for(uint8_t i=0;1;i=(i+1)&3)
+		if(pressed_light_button(i))
+			return i+1;
+}
+
+uint8_t simon_game(void)
+{
 	uint8_t previous_lights_value=LIGHTS_PORT;
+	uint8_t skill_level=select_skill_level();
+	uint8_t current_length;
 	uint8_t victory=1;																					//skill_level 0- sequence length=0 (inmediate victory)
 	uint8_t sequence_length=0;																	//skill_level 1- sequence length=8
 	if(skill_level)																							//skill_level 2- sequence length=14

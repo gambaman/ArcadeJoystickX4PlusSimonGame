@@ -32,6 +32,7 @@ extern volatile uint8_t light_buttons_values;
 #define turn_on_central_button_light LIGHTS_PORT|= 1
 #define toggle_central_button_light LIGHTS_PORT^= 1
 #define turn_off_color_button_lights LIGHTS_PORT&= ~(((1<<(NUMBER_OF_INTERFACES))-1)<<1)
+#define turn_on_all_color_button_lights LIGHTS_PORT|= (((1<<(NUMBER_OF_INTERFACES))-1)<<1)
 #define turn_off_central_button_light LIGHTS_PORT&= ~1
 #define skip_bounces wait_for_miliseconds(50)
 

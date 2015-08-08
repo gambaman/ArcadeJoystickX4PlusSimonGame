@@ -231,7 +231,7 @@ int main(void) {
 					}while(pressed_central_button);
 					if(!color_button_has_been_pressed)//a Simon game session has been requested
 					{
-						credits+=simon_game(1);
+						credits+=simon_game();
 						if(credits)
 							turn_on_central_button_light;
 					}
