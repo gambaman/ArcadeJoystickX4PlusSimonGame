@@ -1,6 +1,6 @@
-/* Teensy Gamepad
- * Copyright (C) 2011 Josh Kropf <josh@slashdev.ca>
- *
+/* 4+1 Joystick plus Simon game
+ * Copyright (C) 2015 David Guerrero
+ * Based on Teensy Gamepad for Josh Kropf <josh@slashdev.ca>
  * Based on keyboard example for Teensy USB Development Board
  * http://www.pjrc.com/teensy/usb_keyboard.html
  * Copyright (c) 2008 PJRC.COM, LLC

@@ -141,7 +141,6 @@ void usb_gamepad_reset_state(uint8_t gamepad)
 
 void configure_polling_interrupt(void)
 {
-//green_semaphore=1;//by default the polling counter can be modified
 TCCR0A=2;//clear counter on compare match
 OCR0A=1; //compare match when counter=1 (1919 times per second aprox.)=>0.5 miliseconds period aprox.
 TCNT0=0x00;     // set timer0 counter initial value to 0
@@ -150,9 +149,7 @@ TCCR0B=4;//divide frequency by 256
 sei(); // enable interrupts
 }
 int main(void) {
-	// set for 16 MHz clock
-	#define free_play (!~credits) //The "infinite" value is represented by a word with all bits set
-	CPU_PRESCALE(0);
+	CPU_PRESCALE(0); 	// set for 16 MHz clock
 	configure_clock();
 	configure_beeper();
 	configure_central_buttons();
@@ -184,23 +181,6 @@ int main(void) {
 	// Wait an extra second for the PC's operating system to load drivers
 	// and do whatever it does to actually be ready for input
 	configure_polling_interrupt();
-// {
-// 	uint8_t i;
-// 	for(i=0;i<5;i++)
-// 	{
-// 		//play_tone(i);
-// 		LIGHTS_PORT=1<<i;
-// 		//active_wait(20);
-// 		//nobeep;
-//
-// 		wait_for_miliseconds(1000);
-// 		//_delay_ms(1);
-// 		//wait_for_miliseconds(500);
-// 		//nobeep;
-// 		//wait_for(1000);
-// 	}
-// }
-// 	nobeep;
 	LED_OFF;
 	while (1)
 	{
