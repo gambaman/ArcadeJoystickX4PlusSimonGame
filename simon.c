@@ -39,8 +39,8 @@ void configure_simon(void)
 {
 	configure_beeper();
 	tones[0]=42;	//losing frequency in Hertzs
-	tones[1]=209;	//blue frequency in Hertzs
-	tones[2]=252;		//yellow frequency in Hertzs
+	tones[1]=252;		//yellow frequency in Hertzs
+	tones[2]=209;	//blue frequency in Hertzs
 	tones[3]=415;		//green frequency in Hertzs
 	tones[4]=310;		//red frequency in Hertzs
 	tones[5]=600;		//victory frequency in Hertzs
