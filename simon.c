@@ -152,5 +152,5 @@ uint8_t simon_game(void)
 	}
 		//play_button_five_times(sequence[current_length-1]);
 	LIGHTS_PORT=previous_lights_value;
-	return !victory? 0 : skill_level>3? ~credits : 1<<((skill_level-1)<<1);
+	return (!victory || free_play)? 0 : skill_level>3? ~credits : 1<<((skill_level-1)<<1);
 }
