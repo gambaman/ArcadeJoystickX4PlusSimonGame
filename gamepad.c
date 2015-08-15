@@ -98,8 +98,8 @@ void read_gamepad_state(void)
 	gamepad_state_t tmp;
 	tmp.buttons=(~BUTTONS_PINS) & (~(1<<7));
 	//by default the insert coin button is reported as not pressed
-	if(players_inserting_coins==scaned_gamepad)
-	{
+	if(players_inserting_coins==scaned_gamepad || players_inserting_coins!=VIRTUAL_GAMEPAD_ID)
+	{//the player associated to the master joystick cannot insert coins
 		tmp.buttons|=(1<<7);
 		if(--inserting_coins_pulse_counter==0)
 			players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
