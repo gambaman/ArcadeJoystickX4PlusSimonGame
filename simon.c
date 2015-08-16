@@ -146,7 +146,12 @@ uint8_t select_skill_level(void)
 	turn_on_all_color_button_lights;
 	for(uint8_t i=0;1;i=(i+1)&3)
 		if(pressed_light_button(i))
-			return i+1;
+			{
+				turn_off_color_button_lights;
+				wait_till_depressed_button(i);
+				wait_for_miliseconds(1);
+				return i+1;
+			}
 }
 
 uint8_t simon_game(void)
