@@ -230,7 +230,7 @@ int main(void) {
 								else
 								{
 											players_inserting_coins=i;
-											inserting_coins_pulse_counter=100;
+											inserting_coins_pulse_counter=150;
 											if(!free_play)
 											{
 												credits--;
