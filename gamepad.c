@@ -27,7 +27,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <string.h>
-#define F_CPU 16000000UL // 1 MHz
+#define F_CPU 16000000UL // 16 MHz
 #include "usb_gamepad.h"
 
 #ifndef TIMING
@@ -93,32 +93,48 @@ volatile uint8_t inserting_coins_pulse_counter;
 
 uint32_t credits;
 
+void usb_gamepad_reset_state(gamepad_state_t* gamepad)
+{
+	(*gamepad).buttons=0;
+	(*gamepad).y_axis =	0x80;
+	(*gamepad).x_axis = 0x80;
+}
+
 void read_gamepad_state(void)
 {
 	gamepad_state_t tmp;
-	tmp.buttons=(~BUTTONS_PINS) & (~(1<<7));
-	//by default the insert coin button is reported as not pressed
-	if(players_inserting_coins==scaned_gamepad || players_inserting_coins!=VIRTUAL_GAMEPAD_ID)
-	{//the player associated to the master joystick cannot insert coins
-		tmp.buttons|=(1<<7);
-		if(--inserting_coins_pulse_counter==0)
-			players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
+	gamepad_state_t* target;
+
+	if(scaned_gamepad==VIRTUAL_GAMEPAD_ID)
+	{
+		usb_gamepad_reset_state(&tmp);
+		target=&gamepad_state[master_gamepad];//the player associated to the master gamepad will not report real data
 	}
-	tmp.y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
-	tmp.x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
-
-	if(scaned_gamepad!=VIRTUAL_GAMEPAD_ID)
-				if(scaned_gamepad!=master_gamepad)
-					memcpy(&gamepad_state[scaned_gamepad], &tmp, sizeof(gamepad_state_t));
-				else
-					memcpy(&gamepad_state[VIRTUAL_GAMEPAD_ID], &tmp, sizeof(gamepad_state_t));
-	else
-		memcpy(&gamepad_state[master_gamepad], &tmp, sizeof(gamepad_state_t));
-
+	else //real data must be reported
+	{
+		tmp.y_axis=axis_value(DIRECTION_PINS,DOWN_PIN,UP_PIN);
+		tmp.x_axis=axis_value(DIRECTION_PINS,RIGHT_PIN,LEFT_PIN);
+		tmp.buttons=(~BUTTONS_PINS) & (~(1<<7));
+		//by default the insert coin button is reported as not pressed
+		if(scaned_gamepad==master_gamepad)//data must be used to control the master user interface
+			target=&gamepad_state[VIRTUAL_GAMEPAD_ID];
+		else//data is usual player interaction
+		{
+			target=&gamepad_state[scaned_gamepad];
+			if(players_inserting_coins==scaned_gamepad)
+			{
+				tmp.buttons|=(1<<7);
+				if(--inserting_coins_pulse_counter==0)
+					players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
+			}
+		}
+	}
+	memcpy(target, &tmp, sizeof(gamepad_state_t));
+//now the state of color central buttons must be updated
 	uint8_t selected_light_button_mask=1<<scaned_gamepad;
-	light_buttons_values&=~selected_light_button_mask;
+	light_buttons_values&=~selected_light_button_mask;//by default is set as not pressed
 
-	if( scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))
+	if( scaned_gamepad!=VIRTUAL_GAMEPAD_ID && (~BUTTONS_PINS & (1<<7))//the button is pressed
 		//|| scaned_gamepad==VIRTUAL_GAMEPAD_ID && (~CENTRAL_BUTTON_PINS & (1<<CENTRAL_BUTTON))
 	 )
 		light_buttons_values|=selected_light_button_mask;
@@ -128,16 +144,6 @@ void select_gamepad(void)
 {
 	SELECTOR_PORT= SELECTOR_PINS_MASK & ~(1<<(scaned_gamepad+1));
 }
-
-
-
-void usb_gamepad_reset_state(uint8_t gamepad)
-{
-	gamepad_state[gamepad].buttons=0;
-	gamepad_state[gamepad].y_axis =	0x80;
-	gamepad_state[gamepad].x_axis = 0x80;
-}
-
 
 void configure_polling_interrupt(void)
 {
@@ -164,7 +170,7 @@ int main(void) {
 	players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins
 
 	for(scaned_gamepad=0;scaned_gamepad<NUMBER_OF_INTERFACES;scaned_gamepad++)
-		usb_gamepad_reset_state(scaned_gamepad); //players will be reported as idle by default
+		usb_gamepad_reset_state(&gamepad_state[scaned_gamepad]); //players will be reported as idle by default
 	scaned_gamepad=0;
 	select_gamepad();
 	master_gamepad=VIRTUAL_GAMEPAD_ID;
@@ -228,16 +234,17 @@ int main(void) {
 											nobeep;
 								}
 								else
-								{
-											players_inserting_coins=i;
-											inserting_coins_pulse_counter=150;
-											if(!free_play)
-											{
-												credits--;
-												if(!credits)
-													turn_off_central_button_light;
-											}
-								}
+								if(!inserting_coins_pulse_counter)//nobody is now inserting coins
+									{
+												inserting_coins_pulse_counter=150;
+												players_inserting_coins=i;
+												if(!free_play)
+												{
+													credits--;
+													if(!credits)
+														turn_off_central_button_light;
+												}
+									}
 								while(pressed_color_buttons);
 						}
 
