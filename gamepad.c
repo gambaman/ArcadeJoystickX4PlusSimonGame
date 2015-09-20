@@ -89,7 +89,7 @@ volatile uint8_t master_gamepad;
 volatile uint8_t light_buttons_values;
 volatile uint8_t random_value;
 volatile uint8_t players_inserting_coins;
-volatile uint8_t inserting_coins_pulse_counter;
+//volatile uint8_t inserting_coins_pulse_counter;
 
 uint32_t credits;
 
@@ -124,8 +124,8 @@ void read_gamepad_state(void)
 			if(players_inserting_coins==scaned_gamepad)
 			{
 				tmp.buttons|=(1<<7);
-				if(--inserting_coins_pulse_counter==0)
-					players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
+				//if(--inserting_coins_pulse_counter==0)
+				//	players_inserting_coins=VIRTUAL_GAMEPAD_ID;//nobody is inserting coins anymore
 			}
 		}
 	}
@@ -148,12 +148,13 @@ void select_gamepad(void)
 void configure_polling_interrupt(void)
 {
 TCCR0A=2;//clear counter on compare match
-OCR0A=1; //compare match when counter=1 (1919 times per second aprox.)=>0.5 miliseconds period aprox.
+OCR0A=64; //compare match when counter=64 (1000 times per second aprox.)=>1 miliseconds period aprox.
 TCNT0=0x00;     // set timer0 counter initial value to 0
 TIMSK0=2;// enable timer 0 output compare match 2
 TCCR0B=4;//divide frequency by 256
 sei(); // enable interrupts
 }
+
 int main(void) {
 	CPU_PRESCALE(0); 	// set for 16 MHz clock
 	configure_clock();
@@ -191,7 +192,7 @@ int main(void) {
 	while (1)
 	{
 			if(pressed_central_button)//master player change or Simon game request
-			{
+			{	wait_for_miliseconds(10);//for skipping bounces
 				uint8_t color_button_has_been_pressed=0;
 				do{
 							for(uint8_t i=0;i<VIRTUAL_GAMEPAD_ID;i++)
@@ -234,9 +235,9 @@ int main(void) {
 											nobeep;
 								}
 								else
-								if(!inserting_coins_pulse_counter)//nobody is now inserting coins
+								//if(!inserting_coins_pulse_counter)//nobody is now inserting coins
 									{
-												inserting_coins_pulse_counter=150;
+												//inserting_coins_pulse_counter=150;
 												players_inserting_coins=i;
 												if(!free_play)
 												{
@@ -244,8 +245,9 @@ int main(void) {
 													if(!credits)
 														turn_off_central_button_light;
 												}
+												while(pressed_color_buttons);
+												players_inserting_coins=VIRTUAL_GAMEPAD_ID;
 									}
-								while(pressed_color_buttons);
 						}
 
 

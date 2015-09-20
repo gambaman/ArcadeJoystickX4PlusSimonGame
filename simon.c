@@ -39,23 +39,23 @@
 
 extern uint32_t credits;
 ////////////////////these were the original delays///////////////////
-// #define tone_duration1 420//miliseconds
-// #define tone_duration2 320//miliseconds
-// #define tone_duration3 220//miliseconds
-// #define pause_duration 50//miliseconds
-// #define pressing_tone_duration 100//miliseconds
-// #define time_out 3000//miliseconds
-// #define lossing_tone_duration 1500//miliseconds
-// #define intersequence_pause_duration 800//miliseconds
-//////////////////////////////////////////////////////////////////
-#define tone_duration1 42//miliseconds
-#define tone_duration2 32//miliseconds
-#define tone_duration3 22//miliseconds
-#define pause_duration 5//miliseconds
-#define pressing_tone_duration 10//miliseconds
+#define tone_duration1 420//miliseconds
+#define tone_duration2 320//miliseconds
+#define tone_duration3 220//miliseconds
+#define pause_duration 50//miliseconds
+#define pressing_tone_duration 400//miliseconds
 #define time_out 3000//miliseconds
 #define lossing_tone_duration 1500//miliseconds
-#define intersequence_pause_duration 700//miliseconds
+#define intersequence_pause_duration 800//miliseconds
+//////////////////////////////////////////////////////////////////
+//#define tone_duration1 42//miliseconds
+//#define tone_duration2 32//miliseconds
+//#define tone_duration3 22//miliseconds
+//#define pause_duration 5//miliseconds
+//#define pressing_tone_duration 10//miliseconds
+//#define time_out 3000//miliseconds
+//#define lossing_tone_duration 1500//miliseconds
+//#define intersequence_pause_duration 700//miliseconds
 //////////////////////////////////////////////////////////////////
 
 uint16_t tones[6];
@@ -89,17 +89,17 @@ void play_button_for(uint8_t button_number,uint16_t time)
 
 void play_button_five_times(uint8_t button_number)
 {
-	// for(uint8_t i=0;i<5;i++)//repeat last tone five times
-	// 	{
-	// 			wait_for_miliseconds(1);
-	// 			play_button_for(button_number,0);
-	// 	}
-		for(uint8_t i=0;i<6;i++)
-		{
-			toggle_color_button_light(button_number);
-			play_tone(button_number);
-		}
-		nobeep;
+	 for(uint8_t i=0;i<5;i++)//repeat last tone five times
+	 	{
+	 		wait_for_miliseconds(20);
+	 		play_button_for(button_number,100);
+	 	}
+		//for(uint8_t i=0;i<6;i++)
+		//{
+		//	toggle_color_button_light(button_number);
+		//	play_tone(button_number);
+		//}
+		//nobeep;
 }
 void play_sequence(uint8_t sequence[],uint8_t length)
 {
@@ -122,13 +122,17 @@ uint8_t rigtht_sequence(uint8_t sequence[],uint8_t length)
 uint8_t wrong_button(uint8_t button)
 {
 	count_miliseconds(time_out);
-	//wait_till_depressed_all_color_buttons();
+  	while(pressed_color_buttons && !end_of_count);
 	while(!end_of_count)
 		if(pressed_color_buttons)
 		{
 			if(pressed_only_button(button))
 			{
-				play_button_for(button,pressing_tone_duration);
+				count_miliseconds(pressing_tone_duration);
+				play_button(button);
+  				while(pressed_color_buttons && !end_of_count);
+				turn_off_color_button_lights;
+				nobeep;
 				return 0;
 			}
 			else
@@ -178,8 +182,10 @@ uint8_t simon_game(void)
 			{
 				toggle_central_button_light;
 				play_tone(5);
+				wait_for_miliseconds(80);
+				nobeep;
+				wait_for_miliseconds(20);
 			}
-			nobeep;
 	}
 		//play_button_five_times(sequence[current_length-1]);
 	LIGHTS_PORT=previous_lights_value;
