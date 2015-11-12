@@ -60,6 +60,7 @@ extern uint32_t credits;
 
 uint16_t tones[6];
 uint8_t sequence[31];
+uint8_t cheat_mode;
 
 void configure_simon(void)
 {
@@ -147,6 +148,7 @@ uint8_t wrong_button(uint8_t button)
 
 uint8_t select_skill_level(void)
 {
+	uint8_t taps_on_central_button=0;
 	turn_on_all_color_button_lights;
 	for(uint8_t i=0;1;i=(i+1)&3)
 		if(pressed_light_button(i))
@@ -155,6 +157,14 @@ uint8_t select_skill_level(void)
 				wait_till_depressed_button(i);
 				wait_for_miliseconds(1);
 				return i+1;
+			}
+		else
+			if(pressed_central_button)
+			{
+				cheat_mode= (++taps_on_central_button==2);
+				wait_for_miliseconds(10);
+				while(pressed_central_button);
+				wait_for_miliseconds(10);
 			}
 }
 
@@ -168,6 +178,8 @@ uint8_t simon_game(void)
 	if(skill_level)																							//skill_level 2- sequence length=14
 		sequence_length= skill_level>=4? 31 : 2+6*skill_level;		//skill_level 3- sequence length=20
 																															//skill_level 4 and above- sequence length=31
+	if(cheat_mode)
+		sequence_length=sequence_length>>1;//the maximun sequence length is halved
 	for(current_length=0;victory && current_length<sequence_length;)
 	{
 		sequence[current_length++]=random_value;
