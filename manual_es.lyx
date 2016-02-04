@@ -1,0 +1,639 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Mando de recreativa USB cuádruple con juego Simon integrado
+\end_layout
+
+\begin_layout Author
+David Guerrero Martos
+\end_layout
+
+\begin_layout Section
+Introducción
+\end_layout
+
+\begin_layout Subsection
+Motivación
+\end_layout
+
+\begin_layout Standard
+Gracias a los emuladores disponible hoy en día tuve la posibilidad de construir
+ mi propia máquina recreativa.
+ A pesar de estar construida con genuinos mandos de recreativa y un añejo
+ monitor CRT no conseguía la misma emoción que jugando a las máquinas originales.
+ En aquellas la muerte era catastrófica: si 
+\begin_inset Quotes eld
+\end_inset
+
+morías
+\begin_inset Quotes erd
+\end_inset
+
+ en la partida y querías continuar jugando debías desprenderte de una preciada
+ moneda.
+ Dado que con un emulador se puede simular la inserción de monedas con solo
+ pulsar una tecla, básicamente se dispone de vidas infinitas y la emoción
+ se pierde.
+ Para solucionarlo idee un mando con un contador de créditos.
+ El mando deshabilita los botones de inserción de monedas si no se dispone
+ de créditos e integra un pequeño reto que habrá que resolver para conseguirlos.
+\end_layout
+
+\begin_layout Subsection
+El reto
+\end_layout
+
+\begin_layout Standard
+Se trata del juego electrónico Simón creado por Ralph Baer y Howard J.
+ Morrison en 1978.
+ La siguiente descripción del mismo está extraida de la wikipedia (https://es.wik
+ipedia.org/wiki/Simon_%28juego%29):
+\end_layout
+
+\begin_layout Quotation
+Dispone de cuatro botones de colores luminosos, cada uno de un color: verde,
+ rojo, azul y amarillo.
+ El juego de forma aleatoria va iluminando los botones de colores, y a la
+ vez emite un sonido propio de cada botón.
+ Después de esperar, el usuario debe ir introduciendo la secuencia mostrada
+ en el orden correcto, ayudándose de su memoria visual y sonora.
+ Si lo consigue, éste responderá con una secuencia más larga, y así sucesivament
+e.
+ Si falla, el usuario debe volver a empezar.
+ Los distintos niveles de dificultad van aumentando la longitud máxima de
+ la secuencia a repetir.
+\end_layout
+
+\begin_layout Standard
+Al igual que en el juego Simón original habrá cuatro niveles de dificultad.
+ El número de creditos concedidos al ganar la partida dependerá del nivel
+ de dificultad elegido.
+\end_layout
+
+\begin_layout Subsection
+Características
+\end_layout
+
+\begin_layout Itemize
+Integra cuatro mandos genéricos usando un único conector USB.
+\end_layout
+
+\begin_layout Itemize
+Cada mando tiene asociados 6 botones genéricos, un botón de start y un botón
+ de inserción de moneda.
+\end_layout
+
+\begin_layout Itemize
+Los botones de inserción de monedas permiten además usar un juego Simón
+ integrado para conseguir créditos.
+\end_layout
+
+\begin_layout Itemize
+El botón de inserción de moneda se deshabilita si no se dispone de créditos.
+\end_layout
+
+\begin_layout Section
+Requisitos
+\end_layout
+
+\begin_layout Subsection
+Hardware
+\end_layout
+
+\begin_layout Itemize
+Cuatro mandos tipo recreativa y, por cada uno de ellos, seis botones genéricos
+ y un botón de start
+\end_layout
+
+\begin_layout Itemize
+Cinco botones tipo recreativa retroiluminados de distindos colores (amarillo,
+ azul, rojo, verde y blanco)
+\end_layout
+
+\begin_layout Itemize
+Un altavoz o zumbador pequeño
+\end_layout
+
+\begin_layout Itemize
+Al menos una resistencia de unos 1000 ohmios.
+ Es posible que las luces de los botones retroiluminados requieran resistencias
+ en serie adicionales.
+\end_layout
+
+\begin_layout Itemize
+48 diodos Schottky
+\end_layout
+
+\begin_layout Itemize
+Placa de prototipado Teensy++ 2.0 (disponible en https://www.pjrc.com/teensy)
+\end_layout
+
+\begin_layout Itemize
+Cableado de interconexión.
+\end_layout
+
+\begin_layout Subsection
+Firmware
+\end_layout
+
+\begin_layout Standard
+El firmware ya compilado puede descargarse de
+\begin_inset Newline newline
+\end_inset
+
+http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file.
+ El código fuente está disponible en https://github.com/gambaman/ArcadeJoystickX4
+PlusSimonGame.
+\end_layout
+
+\begin_layout Subsection
+Software
+\end_layout
+
+\begin_layout Standard
+Para programar la placa de prototipado será necesaria el programa teensy
+ loader disponible en https://www.pjrc.com/teensy/loader.html.
+ Si además desea recompilar el firmware necesitará el compilador avr-gcc
+ (http://www.nongnu.org/avr-libc/) así como la herramienta GNU Make (http://www.gnu.
+org/software/make/).
+\end_layout
+
+\begin_layout Standard
+Por supuesto, para poder disfrutar jugando con los mandos necesitará juegos
+ y/o emuladores.
+ Por ejemplo el emulador de recreativa mame (http://mamedev.org/).
+\end_layout
+
+\begin_layout Section
+Montaje
+\end_layout
+
+\begin_layout Subsection
+Hardware
+\end_layout
+
+\begin_layout Standard
+Los componentes deben conectarse de acuerdo al siguiente esquemático:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename schematic.svg
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Los botones de inserción de monedas retroiluminados azul, amarillo, verde
+ y rojo deberán conectarse respectivamente a las líneas etiquetadas con
+ vgnd1, vgnd2, vgnd3 y vgnd4.
+ El botón retroiluminado blanco aparece etiquetado como 
+\begin_inset Quotes eld
+\end_inset
+
+central button
+\begin_inset Quotes erd
+\end_inset
+
+ y tiene funciones especiales.
+ Hay que tener en cuenta que los botones retroiluminados empleados en mi
+ caso permitían conectar cada bombilla/led directamente a una tensión de
+ 5 voltios como la generada por la placa de prototipado.
+ En otro caso puede ser necesario poner resistencias en serie para limitar
+ la intensidad que pasa por los led.
+ Deberá comprobarlo en su hoja de características.
+\end_layout
+
+\begin_layout Subsection
+Firmware
+\end_layout
+
+\begin_layout Subsubsection
+Compilación
+\end_layout
+
+\begin_layout Standard
+Este paso no es necesario a menos que desee modificar el código fuente.
+ Desde una terminal/línea de comandos, sitúese en la carpeta/directorio
+ donde se encuentre el código fuente y ejecute lo siguiente:
+\end_layout
+
+\begin_layout Itemize
+make clean
+\end_layout
+
+\begin_layout Itemize
+make
+\end_layout
+
+\begin_layout Standard
+Esto generará un fichero con extensión .hex con el firmware compilado.
+ Tras conectar la placa de prototipado podrá programarla siguiendo las instrucci
+ones de la sección siguiente u, opcinalmente si ha descargado la versión
+ del teensy loader para linea de comandos, programarla directamente ejecutando
+ lo siguiente:
+\end_layout
+
+\begin_layout Itemize
+make program
+\end_layout
+
+\begin_layout Standard
+Tras esto aparecerá un mensaje pidiendo que pulse el botón de la placa de
+ prototipado.
+ Hágalo y el firmware se escribirá.
+\end_layout
+
+\begin_layout Subsubsection
+Programación
+\end_layout
+
+\begin_layout Standard
+Puede encontrar una descripción detallada de los siguientes pasos en
+\begin_inset Newline newline
+\end_inset
+
+https://www.pjrc.com/teensy/loader.html.
+\end_layout
+
+\begin_layout Itemize
+Conecte la placa de prototipado a su computadora.
+\end_layout
+
+\begin_layout Itemize
+Ejecute la herramienta teensy loader.
+\end_layout
+
+\begin_layout Itemize
+Pulse el botón de la placa de prototipado.
+\end_layout
+
+\begin_layout Itemize
+Elija la opción "Open HEX File" del menú 
+\begin_inset Quotes eld
+\end_inset
+
+File
+\begin_inset Quotes erd
+\end_inset
+
+ y seleccione el fichero de extensión .hex con el firmware a programar.
+\end_layout
+
+\begin_layout Itemize
+Seleccione la opción "Program" del menú "Operations" o haga click sobre
+ el botón 
+\begin_inset Quotes eld
+\end_inset
+
+Program
+\begin_inset Quotes erd
+\end_inset
+
+ de la barra de herramientas.
+ Tras la escritura aparecerá el mensaje "Download Complete".
+\end_layout
+
+\begin_layout Itemize
+Seleccione la opción "Reboot" del menú "Operations" o haga click sobre el
+ botón 
+\begin_inset Quotes eld
+\end_inset
+
+Reboot
+\begin_inset Quotes erd
+\end_inset
+
+ de la barra de herramientas.
+\end_layout
+
+\begin_layout Subsection
+Software
+\end_layout
+
+\begin_layout Standard
+Al conectar el sistema a su computadora esta reconocerá un conjunto de mandos
+ sin que sea necesario ningún driver especial.
+ No obstante, si va a utilizarlo con un software de emulación de recreativa
+ deberá configurar dicho software adecuadamente.
+ En primer lugar deberá establecer los cuatro primeros interfaces detectados
+ como los mandos de los jugadores 1, 2, 3 y 4.
+ Además deberá establecer el último botón de cada uno de ellos como botón
+ de inserción de monedas.
+ La quinta interfaz se usa para interactuar con la interfaz del emulador
+ y no se corresponde en principio con ninguno de los mandos (véase la sección
+ siguiente).
+ Deberá configurar sus botones para tareas tales como pausar la emulación,
+ resetear el sistema emulado, etc.
+\end_layout
+
+\begin_layout Section
+Uso
+\end_layout
+
+\begin_layout Subsection
+Interacción con interfaces de emulación
+\end_layout
+
+\begin_layout Standard
+Dar órdenes a la interfaz del emulador (por ejemplo pausar o quitar la emulación
+) requiere establecer uno de los joysticks como controlador de la interfaz.
+ Para ello, manteniendo pulsado el botón retroiluminado blanco, pulse el
+ botón de inserción de crédito del mando que desee establecer como controlador
+ de la interfaz.
+ La luz de dicho botón se iluminará para indicar que dicho mando ya no funciona
+ como controlador de juego.
+ A partir de entonces sus botones tendrán asociados las funciones que haya
+ configurado en el apartado anterior.
+ Si quiere cambiar el mando de control de la interfaz repita el mismo proceso
+ pulsando el botón de inserción de moneda de otro mando.
+ También puede hacer que el mando de control de la interfaz vuelva a funcionar
+ como mando de juego volviendo a pulsar su botón de inserción de moneda
+ mientras se mantiene pulsado el botón retroiluminado blanco.
+ Al hacerlo el botón de inserción de moneda se apagará.
+\end_layout
+
+\begin_layout Subsection
+Obtención de créditos
+\end_layout
+
+\begin_layout Standard
+Obtener créditos requiere ganar partidas del juego Simón integrado.
+ Para ello siga los siguientes pasos:
+\end_layout
+
+\begin_layout Itemize
+Pulse el botón retroiluminado blanco.
+ Los cuatro botones de inserción de moneda se iluminarán.
+\end_layout
+
+\begin_layout Itemize
+Seleccione el nivel de dificultad de la partida de Simón pulsando uno de
+ los botones de inserción de moneda de acuerdo a la siguiente tabla.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+color del botón
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+amarillo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+azul
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+verde
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+rojo
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+longitud máxima de secuencia a repetir
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+créditos concedidos al ganar la partida
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ilimitados
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Repita las secuencias de pulsaciones que se le indiquen hasta que parpadee
+ el botón blanco central.
+ Esto indicará que ha ganado la partida.
+ El botón blanco se mantendrá iluminado mientras disponga de créditos.
+\end_layout
+
+\begin_layout Subsubsection
+Haciendo trampas
+\end_layout
+
+\begin_layout Standard
+La longitudes de secuencia que aparecen en la tabla anterior reproducen
+ fielmente las del juego Simon original.
+ No obstante es posible reducir dichas longitudes a la mitad.
+ Para ello basta pulsar exactamente tres veces el botón retroiluminado blanco
+ antes de selecionar el nivel de dificultad.
+\end_layout
+
+\begin_layout Section*
+Reconocimientos
+\end_layout
+
+\begin_layout Standard
+El firmware está basado en proyecto Teensy Gamepad de Josh Kropf (josh@slashdev.c
+a), que a su vez está basado en el ejemplo de teclado para la placa de prototipa
+do Teensy (http://www.pjrc.com/teensy/usb_keyboard.html , Copyright (c) 2008
+ PJRC.COM, LLC).
+\end_layout
+
+\begin_layout Standard
+La parte relativa al juego Simón ha sido posible gracias a los trabajos
+ de ingeniería inversa realizados por Simon Inns
+\begin_inset Newline newline
+\end_inset
+
+ (http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Si
+mon_game).
+\end_layout
+
+\end_body
+\end_document
