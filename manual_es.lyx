@@ -237,7 +237,7 @@ Los componentes deben conectarse de acuerdo al siguiente esquemático:
 
 \begin_layout Standard
 \begin_inset Graphics
-	filename schematic.svg
+	filename schematic.eps
 	scale 20
 
 \end_inset
