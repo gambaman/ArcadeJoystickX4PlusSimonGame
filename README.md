@@ -163,7 +163,9 @@ following these steps:
 | color of the insert coin button        | yellow | blue | green | red       |
 | -------------------------------------- | -------|------|-------|-----------|
 | maximun length of the sequence         | 8      | 14   | 20    | 31        |
+| -------------------------------------- | -------|------|-------|-----------|
 | credits obtained when winning the game | 1      | 4    | 16    | unlimited |
+| -------------------------------------- | -------|------|-------|-----------|
 
   * The system will generate sequences of lights and sounds. Reproduce those sequences by pressing the buttons till the white button flashes. That will indicate you have won the game and got one or more credits. The white button will keep shining as long as you have credits. 
 
