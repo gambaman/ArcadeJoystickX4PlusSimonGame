@@ -1,0 +1,714 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+USB arcade joystick x4 plus Simon game
+\end_layout
+
+\begin_layout Author
+David Guerrero Martos
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Motivation
+\end_layout
+
+\begin_layout Standard
+Thanks to the emulators available nowadays I was able to make my own arcade
+ cabinet.
+ Although I employed genuine arcade joysticks and a vintage CRT display
+ I didn't get the same feeling that playing the original arcades.
+ When playing the original, death was dramatic: if you 
+\begin_inset Quotes eld
+\end_inset
+
+died
+\begin_inset Quotes erd
+\end_inset
+
+ in the game and you wanted to continue playing you had to spend a valuable
+ coin.
+ Since emulators let you simulate the insertion of a coin just by pressing
+ a key, in practical terms you have unlimited lives and the feeling is lost.
+ To solve this I devised a joystick system with an integrated credit counter.
+ The system disables the insert coin buttons unless credits are available
+ and includes a little challenge that must be won in order to obtain them.
+\end_layout
+
+\begin_layout Subsection
+The challenge
+\end_layout
+
+\begin_layout Standard
+It is the Simon electronic game created by Ralph Baer and Howard J.
+ Morrison in 1978.
+ The following description of the game has bee taken from wikipedia (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/Simon_%28game%29
+\end_layout
+
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Quotation
+The device has four colored buttons, each producing a particular tone when
+ it is pressed or activated by the device.
+ A round in the game consists of the device lighting up one or more buttons
+ in a random order, after which the player must reproduce that order by
+ pressing the buttons.
+ As the game progresses, the number of buttons to be pressed increases.
+\end_layout
+
+\begin_layout Standard
+As in the original Simon game there will be four skill levels.
+ The number of credits obtained when the game is won will depend on the
+ selected skill level.
+\end_layout
+
+\begin_layout Subsection
+Features
+\end_layout
+
+\begin_layout Itemize
+Includes four arcade joysticks using just an USB connector.
+\end_layout
+
+\begin_layout Itemize
+No special drivers are needed.
+\end_layout
+
+\begin_layout Itemize
+Each joystick have six generic buttons, a start button and an insert coin
+ button.
+\end_layout
+
+\begin_layout Itemize
+The insert coin buttons are also employed in an integrated Simon game in
+ order to obtain credits.
+\end_layout
+
+\begin_layout Itemize
+The insert coin buttons are disabled when there are no credits available.
+\end_layout
+
+\begin_layout Section
+What is needed
+\end_layout
+
+\begin_layout Subsection
+Hardware
+\end_layout
+
+\begin_layout Itemize
+Four arcade joysticks and, for each of them, six generic buttons and an
+ start button
+\end_layout
+
+\begin_layout Itemize
+Five retroiluminated arcade colored buttons (yellow, blue, red, green and
+ white)
+\end_layout
+
+\begin_layout Itemize
+A little speaker or buzzer
+\end_layout
+
+\begin_layout Itemize
+At least a resistor of about 1000 ohms.
+ The lights of the retroiluminated buttos may require additional series
+ resistors.
+\end_layout
+
+\begin_layout Itemize
+48 Schottky diodes
+\end_layout
+
+\begin_layout Itemize
+A Teensy++ 2.0 board (available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Interconnection wires
+\end_layout
+
+\begin_layout Subsection
+Firmware
+\end_layout
+
+\begin_layout Standard
+The compiled firmware can be downloaded from 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file
+\end_layout
+
+\end_inset
+
+.
+ The source code is available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Software
+\end_layout
+
+\begin_layout Standard
+In order to program the board you will need the Teensy Loader application
+ available at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy/loader.html
+\end_layout
+
+\end_inset
+
+.
+ If you also want to recompile the firmware you will need the avr-gcc compilator
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.nongnu.org/avr-libc/
+\end_layout
+
+\end_inset
+
+) as well as the GNU Make tool (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.gnu.org/software/make/
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Of course, in order to enjoy playing you will need games and/or emulators,
+ for example the MAME emulator (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://mamedev.org/
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Section
+Building
+\end_layout
+
+\begin_layout Subsection
+Hardware
+\end_layout
+
+\begin_layout Standard
+The components must be wired as shown in the following schematic:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename schematic.eps
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The blue, yellow, green and red retroiluminated insert coin buttons must
+ be connected to the lines vgnd1, vgnd2, vgnd3 and vgnd4 respectivelly.
+ The white retroiluminated button is tagged as 
+\begin_inset Quotes eld
+\end_inset
+
+central button
+\begin_inset Quotes erd
+\end_inset
+
+ and has special functions.
+ Note that, in my case, the lights of the retroiluminated buttons can be
+ connected directly to a voltage of 5V like the one generated by the board.
+ Other models may require additional series resistors in order to limit
+ the current throught the LEDs.
+ In case of doubt look at its datasheet.
+\end_layout
+
+\begin_layout Subsection
+Firmware
+\end_layout
+
+\begin_layout Subsubsection
+Compiling
+\end_layout
+
+\begin_layout Standard
+This step is not required unless you want to modify the source code.
+ From a terminal/command line go to the folder/directory containing the
+ source code and execute the following:
+\end_layout
+
+\begin_layout Itemize
+make clean
+\end_layout
+
+\begin_layout Itemize
+make
+\end_layout
+
+\begin_layout Standard
+This will generate a .hex file containing the compiled firmware.
+ After connectig the teensy board you can program it as shown in the next
+ section or, if you have installed the command line version of the teensy
+ loader application, program it directly by executing this:
+\end_layout
+
+\begin_layout Itemize
+make program
+\end_layout
+
+\begin_layout Standard
+You will be requested to push the button of the teensy board.
+ Do so and the firmware will be downloaded.
+\end_layout
+
+\begin_layout Subsubsection
+Programming
+\end_layout
+
+\begin_layout Standard
+You can find a detailed description of the following stelps at 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy/loader.html
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Connect the teensy board to your computer.
+\end_layout
+
+\begin_layout Itemize
+Execute the teensy loader application.
+\end_layout
+
+\begin_layout Itemize
+Push the botton of the teensy board.
+\end_layout
+
+\begin_layout Itemize
+From the File name, choose "Open HEX File" and open the .hex file containing
+ the firmware to be programmed.
+\end_layout
+
+\begin_layout Itemize
+Select "Program" from the "Operations" menu, or click the Program button
+ on the tool bar.
+ You should see the "Download Complete" message.
+\end_layout
+
+\begin_layout Itemize
+Choose "Reboot" from the "Operations" menu, or click the Reboot button on
+ the tool bar.
+\end_layout
+
+\begin_layout Subsection
+Software
+\end_layout
+
+\begin_layout Standard
+When connecting the system to your computer it will recognize a set of joysticks.
+ No special drivers should be needed.
+ However, if the system is going to be used with arcade emulation software
+ you will need to configure the emulator properly.
+ First you will need to set the first four detected interfaces as the joysticks
+ of the players 1, 2, 3 and 4.
+ Also you will have to set the last button of each joystick as insert coin
+ button.
+ The fifth interface is used for interacting with the emulator and is not
+ linked to any joystick by default (see the next section).
+ You will have to configure its buttons for tasks such as pausing the emulation,
+ reseting the emulated system, etc.
+\end_layout
+
+\begin_layout Section
+Usage
+\end_layout
+
+\begin_layout Subsection
+Interacting with emulators
+\end_layout
+
+\begin_layout Standard
+Sending commands to the emulator (for example to pause or quit the emulation)
+ requires setting one of the joysticks as emulation controller.
+ To do so, while pushing the white retroiluminated button, push the insert
+ coin button of the joystick to be set as emulation controller.
+ That button will light up to indicate that the associated joystick does
+ not work as game controller anymore.
+ Its buttons will have associated the functions you configured in the previous
+ section.
+ If you want to change the joystick to be used as emulation controller repeat
+ the previous step but pushing the insert coin button of another joystick.
+ You can make the joystick used as emulation controller work as game controller
+ again.
+ To do so just press its insert coin button again while holding the retroilumina
+ted white button pressed.
+ After that the insert coin button will light down.
+\end_layout
+
+\begin_layout Subsection
+Getting credits
+\end_layout
+
+\begin_layout Standard
+In order to obtain credits you will have to play the embebed Simon game
+ by following these steps:
+\end_layout
+
+\begin_layout Itemize
+Push the white retroiluminated button.
+ All the insert coin buttos will light up.
+\end_layout
+
+\begin_layout Itemize
+Select the skill level by pushing one of the insert coin buttons.
+ The following table describes each skill level.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+color of the insert coin button
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+yellow
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+blue
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+green
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+red
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+maximun length of the sequence
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+31
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+credits obtained when winning the game
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+unlimited
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The system will generate sequences of lights and sounds.
+ Reproduce those sequences by pressing the buttons till the white button
+ flashes.
+ That will indicate you have won the game and got one or more credits.
+ The white button will keep shining as long as you have credits.
+\end_layout
+
+\begin_layout Subsubsection
+Cheating
+\end_layout
+
+\begin_layout Standard
+The sequence lengths shown in the previous table are those of the original
+ Simon game.
+ However, it is possible to halve the maximun length of the sequences.
+ To do so just push exactly three times the white retroiluminated button
+ before selecting the skill level.
+\end_layout
+
+\begin_layout Section*
+Acknowledgments
+\end_layout
+
+\begin_layout Standard
+The firmware is based on the Teensy Gamepad proyect by Josh Kropf (josh@slashdev.
+ca) which in turn is based on the keyboard example for the Teensy board
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.pjrc.com/teensy/usb_keyboard.html
+\end_layout
+
+\end_inset
+
+ , Copyright (c) 2008 PJRC.COM, LLC).
+\end_layout
+
+\begin_layout Standard
+The Simon game replication was possible thanks to the reverse engineering
+ carried out by Simon Inns (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Simo
+n_game
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\end_body
+\end_document

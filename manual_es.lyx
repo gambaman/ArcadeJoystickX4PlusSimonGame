@@ -91,8 +91,8 @@ morías
  en la partida y querías continuar jugando debías desprenderte de una preciada
  moneda.
  Dado que con un emulador se puede simular la inserción de monedas con solo
- pulsar una tecla, básicamente se dispone de vidas infinitas y la emoción
- se pierde.
+ pulsar una tecla, a efectos prácticos se dispone de vidas infinitas y la
+ emoción se pierde.
  Para solucionarlo idee un mando con un contador de créditos.
  El mando deshabilita los botones de inserción de monedas si no se dispone
  de créditos e integra un pequeño reto que habrá que resolver para conseguirlos.
@@ -105,8 +105,18 @@ El reto
 \begin_layout Standard
 Se trata del juego electrónico Simón creado por Ralph Baer y Howard J.
  Morrison en 1978.
- La siguiente descripción del mismo está extraida de la wikipedia (https://es.wik
-ipedia.org/wiki/Simon_%28juego%29):
+ La siguiente descripción del mismo está extraida de la wikipedia (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://es.wikipedia.org/wiki/Simon_%28juego%29
+\end_layout
+
+\end_inset
+
+):
 \end_layout
 
 \begin_layout Quotation
@@ -138,6 +148,10 @@ Integra cuatro mandos genéricos usando un único conector USB.
 \end_layout
 
 \begin_layout Itemize
+No requiere drivers especiales.
+\end_layout
+
+\begin_layout Itemize
 Cada mando tiene asociados 6 botones genéricos, un botón de start y un botón
  de inserción de moneda.
 \end_layout
@@ -148,7 +162,7 @@ Los botones de inserción de monedas permiten además usar un juego Simón
 \end_layout
 
 \begin_layout Itemize
-El botón de inserción de moneda se deshabilita si no se dispone de créditos.
+Los botones de inserción de moneda se deshabilitan si no se dispone de créditos.
 \end_layout
 
 \begin_layout Section
@@ -184,11 +198,22 @@ Al menos una resistencia de unos 1000 ohmios.
 \end_layout
 
 \begin_layout Itemize
-Placa de prototipado Teensy++ 2.0 (disponible en https://www.pjrc.com/teensy)
+Placa de prototipado Teensy++ 2.0 (disponible en 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy
+\end_layout
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Itemize
-Cableado de interconexión.
+Cableado de interconexión
 \end_layout
 
 \begin_layout Subsection
@@ -196,13 +221,30 @@ Firmware
 \end_layout
 
 \begin_layout Standard
-El firmware ya compilado puede descargarse de
-\begin_inset Newline newline
+El firmware ya compilado puede descargarse de 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file
+\end_layout
+
 \end_inset
 
-http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file.
- El código fuente está disponible en https://github.com/gambaman/ArcadeJoystickX4
-PlusSimonGame.
+.
+ El código fuente está disponible en 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -211,16 +253,58 @@ Software
 
 \begin_layout Standard
 Para programar la placa de prototipado será necesaria el programa teensy
- loader disponible en https://www.pjrc.com/teensy/loader.html.
+ loader disponible en 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy/loader.html
+\end_layout
+
+\end_inset
+
+.
  Si además desea recompilar el firmware necesitará el compilador avr-gcc
- (http://www.nongnu.org/avr-libc/) así como la herramienta GNU Make (http://www.gnu.
-org/software/make/).
+ (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.nongnu.org/avr-libc/
+\end_layout
+
+\end_inset
+
+) así como la herramienta GNU Make (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.gnu.org/software/make/
+\end_layout
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
 Por supuesto, para poder disfrutar jugando con los mandos necesitará juegos
- y/o emuladores.
- Por ejemplo el emulador de recreativa mame (http://mamedev.org/).
+ y/o emuladores, por ejemplo el emulador de recreativa mame (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://mamedev.org/
+\end_layout
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Section
@@ -311,11 +395,18 @@ Programación
 \end_layout
 
 \begin_layout Standard
-Puede encontrar una descripción detallada de los siguientes pasos en
-\begin_inset Newline newline
+Puede encontrar una descripción detallada de los siguientes pasos en 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://www.pjrc.com/teensy/loader.html
+\end_layout
+
 \end_inset
 
-https://www.pjrc.com/teensy/loader.html.
+.
 \end_layout
 
 \begin_layout Itemize
@@ -382,9 +473,8 @@ Al conectar el sistema a su computadora esta reconocerá un conjunto de mandos
  como los mandos de los jugadores 1, 2, 3 y 4.
  Además deberá establecer el último botón de cada uno de ellos como botón
  de inserción de monedas.
- La quinta interfaz se usa para interactuar con la interfaz del emulador
- y no se corresponde en principio con ninguno de los mandos (véase la sección
- siguiente).
+ La quinta interfaz se usa para interactuar con el emulador y no se corresponde
+ en principio con ninguno de los mandos (véase la sección siguiente).
  Deberá configurar sus botones para tareas tales como pausar la emulación,
  resetear el sistema emulado, etc.
 \end_layout
@@ -621,18 +711,35 @@ Reconocimientos
 \begin_layout Standard
 El firmware está basado en proyecto Teensy Gamepad de Josh Kropf (josh@slashdev.c
 a), que a su vez está basado en el ejemplo de teclado para la placa de prototipa
-do Teensy (http://www.pjrc.com/teensy/usb_keyboard.html , Copyright (c) 2008
- PJRC.COM, LLC).
+do Teensy (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.pjrc.com/teensy/usb_keyboard.html
+\end_layout
+
+\end_inset
+
+ , Copyright (c) 2008 PJRC.COM, LLC).
 \end_layout
 
 \begin_layout Standard
 La parte relativa al juego Simón ha sido posible gracias a los trabajos
- de ingeniería inversa realizados por Simon Inns
-\begin_inset Newline newline
+ de ingeniería inversa realizados por Simon Inns (
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Simo
+n_game
+\end_layout
+
 \end_inset
 
- (http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Si
-mon_game).
+).
 \end_layout
 
 \end_body
