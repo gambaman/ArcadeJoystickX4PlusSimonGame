@@ -79,7 +79,7 @@ example the MAME emulator ([http://mamedev.org/](http://mamedev.org/)).
 
 The components must be wired as shown in the following schematic:
 
-![figure schematic.svg](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/schematic.svg)
+![figure schematic.svg](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/schematic.svg?raw=true)
 
 The blue, yellow, green and red retroiluminated insert coin buttons must be
 connected to the lines vgnd1, vgnd2, vgnd3 and vgnd4 respectivelly. The white
