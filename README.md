@@ -192,4 +192,4 @@ engineering_an_MB_Electronic_Simon_game](http://www.waitingforfriday.com/index
 
 # Videos
 
-You can see the system working at [https://youtu.be/ENW7n0ni5kg]https://youtu.be/ENW7n0ni5kg
+You can see the system working at [https://youtu.be/ENW7n0ni5kg](https://youtu.be/ENW7n0ni5kg).
