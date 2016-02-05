@@ -2,6 +2,8 @@
 
 ##  David Guerrero Martos
 
+![figure cabinet.jpg](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/cabinet.jpg)
+
 #  1 Introduction
 
 ##  1.1 Motivation
@@ -187,3 +189,7 @@ The Simon game replication was possible thanks to the reverse engineering
 carried out by Simon Inns ([http://www.waitingforfriday.com/index.php/Reverse_
 engineering_an_MB_Electronic_Simon_game](http://www.waitingforfriday.com/index
 .php/Reverse_engineering_an_MB_Electronic_Simon_game)).
+
+# Videos
+
+You can see the system working at [https://youtu.be/ENW7n0ni5kg]https://youtu.be/ENW7n0ni5kg
