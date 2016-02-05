@@ -677,7 +677,7 @@ Acknowledgments
 \end_layout
 
 \begin_layout Standard
-The firmware is based on the Teensy Gamepad proyect by Josh Kropf (josh@slashdev.
+The firmware is based on the Teensy Gamepad project by Josh Kropf (josh@slashdev.
 ca) which in turn is based on the keyboard example for the Teensy board
  (
 \begin_inset Flex URL

@@ -178,7 +178,7 @@ button before selecting the skill level.
 
 #  Acknowledgments
 
-The firmware is based on the Teensy Gamepad proyect by Josh Kropf
+The firmware is based on the Teensy Gamepad project by Josh Kropf
 (josh@slashdev.ca) which in turn is based on the keyboard example for the
 Teensy board ([http://www.pjrc.com/teensy/usb_keyboard.html](http://www.pjrc.c
 om/teensy/usb_keyboard.html) , Copyright (c) 2008 PJRC.COM, LLC).
