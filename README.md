@@ -79,7 +79,7 @@ example the MAME emulator ([http://mamedev.org/](http://mamedev.org/)).
 
 The components must be wired as shown in the following schematic:
 
-![figure schematic.svg](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/schematic.svg?raw=true)
+![figure schematic.png](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/schematic.png)
 
 The blue, yellow, green and red retroiluminated insert coin buttons must be
 connected to the lines vgnd1, vgnd2, vgnd3 and vgnd4 respectivelly. The white
@@ -161,6 +161,7 @@ following these steps:
   * Select the skill level by pushing one of the insert coin buttons. The following table describes each skill level. 
 
 | color of the insert coin button        | yellow | blue | green | red       |
+| -------------------------------------- | -------|------|-------|-----------|
 | maximun length of the sequence         | 8      | 14   | 20    | 31        |
 | credits obtained when winning the game | 1      | 4    | 16    | unlimited |
 
