@@ -171,13 +171,10 @@ button before selecting the skill level.
 
 The firmware is based on the Teensy Gamepad project by Josh Kropf
 (josh@slashdev.ca) which in turn is based on the keyboard example for the
-Teensy board ([http://www.pjrc.com/teensy/usb_keyboard.html](http://www.pjrc.c
-om/teensy/usb_keyboard.html) , Copyright (c) 2008 PJRC.COM, LLC).
+Teensy board ([http://www.pjrc.com/teensy/usb_keyboard.html](http://www.pjrc.com/teensy/usb_keyboard.html) , Copyright (c) 2008 PJRC.COM, LLC).
 
 The Simon game replication was possible thanks to the reverse engineering
-carried out by Simon Inns ([http://www.waitingforfriday.com/index.php/Reverse_
-engineering_an_MB_Electronic_Simon_game](http://www.waitingforfriday.com/index
-.php/Reverse_engineering_an_MB_Electronic_Simon_game)).
+carried out by Simon Inns ([http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Simon_game](http://www.waitingforfriday.com/index.php/Reverse_engineering_an_MB_Electronic_Simon_game)).
 
 # Videos
 
