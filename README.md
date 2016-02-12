@@ -22,9 +22,7 @@ little challenge that must be won in order to obtain them.
 ##  1.2 The challenge
 
 It is the Simon electronic game created by Ralph Baer and Howard J. Morrison
-in 1978. The following description of the game has bee taken from wikipedia ([
-https://en.wikipedia.org/wiki/Simon_%28game%29](https://en.wikipedia.org/wiki/
-Simon_%28game%29)):
+in 1978. The following description of the game has bee taken from wikipedia ([https://en.wikipedia.org/wiki/Simon_%28game%29](https://en.wikipedia.org/wiki/Simon_%28game%29)):
 
 > The device has four colored buttons, each producing a particular tone when
 it is pressed or activated by the device. A round in the game consists of the
@@ -57,23 +55,14 @@ credits obtained when the game is won will depend on the selected skill level.
 
 ##  2.2 Firmware
 
-The compiled firmware can be downloaded from [http://www.dte.us.es/Members/gue
-rre/firmware_arcade/at_download/file](http://www.dte.us.es/Members/guerre/firm
-ware_arcade/at_download/file). The source code is available at [https://github
-.com/gambaman/ArcadeJoystickX4PlusSimonGame](https://github.com/gambaman/Arcad
-eJoystickX4PlusSimonGame).
+The compiled firmware can be downloaded from [http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file](http://www.dte.us.es/Members/guerre/firmware_arcade/at_download/file). The source code is available at [https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame).
 
 ##  2.3 Software
 
-In order to program the board you will need the Teensy Loader application
-available at [https://www.pjrc.com/teensy/loader.html](https://www.pjrc.com/te
-ensy/loader.html). If you also want to recompile the firmware you will need
-the avr-gcc compilator ([http://www.nongnu.org/avr-
-libc/](http://www.nongnu.org/avr-libc/)) as well as the GNU Make tool
+In order to program the board you will need the Teensy Loader application available at [https://www.pjrc.com/teensy/loader.html](https://www.pjrc.com/teensy/loader.html). If you also want to recompile the firmware you will need the avr-gcc compilator ([http://www.nongnu.org/avr-libc/](http://www.nongnu.org/avr-libc/)) as well as the GNU Make tool
 ([http://www.gnu.org/software/make/](http://www.gnu.org/software/make/)).
 
-Of course, in order to enjoy playing you will need games and/or emulators, for
-example the MAME emulator ([http://mamedev.org/](http://mamedev.org/)).
+Of course, in order to enjoy playing you will need games and/or emulators, for example the MAME emulator ([http://mamedev.org/](http://mamedev.org/)).
 
 #  3 Building
 
