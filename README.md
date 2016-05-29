@@ -59,7 +59,7 @@ The compiled firmware can be downloaded from [http://www.dte.us.es/Members/guerr
 
 ##  2.3 Software
 
-In order to program the board you will need the Teensy Loader application available at [https://www.pjrc.com/teensy/loader.html](https://www.pjrc.com/teensy/loader.html). If you also want to recompile the firmware you will need the avr-gcc compilator ([http://www.nongnu.org/avr-libc/](http://www.nongnu.org/avr-libc/)) as well as the GNU Make tool
+In order to program the board you will need the Teensy Loader application available at [https://www.pjrc.com/teensy/loader.html](https://www.pjrc.com/teensy/loader.html). If you also want to recompile the firmware you will need the avr-gcc compiler ([http://www.nongnu.org/avr-libc/](http://www.nongnu.org/avr-libc/)) as well as the GNU Make tool
 ([http://www.gnu.org/software/make/](http://www.gnu.org/software/make/)).
 
 Of course, in order to enjoy playing you will need games and/or emulators, for example the MAME emulator ([http://mamedev.org/](http://mamedev.org/)).
