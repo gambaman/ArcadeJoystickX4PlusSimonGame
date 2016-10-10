@@ -151,13 +151,13 @@ following these steps:
   * Push the white retroiluminated button. All the insert coin buttos will light up. 
   * Select the skill level by pushing one of the retroiluminated buttons. The following table describes each skill level. 
 
-|color of the retroiluminatd button|maximun length of the sequence|credits obtained when winning the game|
-|:--------------------------------:|:----------------------------:|:------------------------------------:|
-| white                            | 4                            | 1				      |
-| yellow                           | 8                            | 4				      |
-| blue                             | 14			          | 16				      |
-| green                            | 20                           | 256				      |
-| red                              | 31			          | unlimited			      |
+|color of the retroiluminated button|maximun length of the sequence|credits obtained when winning the game|
+|:---------------------------------:|:----------------------------:|:------------------------------------:|
+| white                             | 4                            | 1					  |
+| yellow                            | 8                            | 4				      	  |
+| blue                              | 14		           | 16				          |
+| green                             | 20                           | 256			          |
+| red                               | 31			   | unlimited			          |
 
   * The system will generate sequences of lights and sounds. Reproduce those sequences by pressing the buttons till the white button flashes. That will indicate you have won the game and got one or more credits. The white button will keep shining as long as you have credits.
 
