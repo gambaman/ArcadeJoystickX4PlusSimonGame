@@ -1,5 +1,5 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
 \begin_document
 \begin_header
 \textclass article
@@ -12,13 +12,13 @@
 \font_roman default
 \font_sans default
 \font_typewriter default
+\font_math auto
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
-
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -28,15 +28,24 @@
 \use_hyperref false
 \papersize default
 \use_geometry false
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -153,7 +162,7 @@ No requiere drivers especiales.
 
 \begin_layout Itemize
 Cada mando tiene asociados 6 botones genéricos, un botón de start y un botón
- de inserción de moneda.
+ de inserción de moneda retroiluminado.
 \end_layout
 
 \begin_layout Itemize
@@ -521,7 +530,7 @@ Pulse el botón retroiluminado blanco.
 
 \begin_layout Itemize
 Seleccione el nivel de dificultad de la partida de Simón pulsando uno de
- los botones de inserción de moneda de acuerdo a la siguiente tabla.
+ los botones retroiluminados de acuerdo a la siguiente tabla.
 \end_layout
 
 \begin_layout Standard
@@ -530,19 +539,29 @@ Seleccione el nivel de dificultad de la partida de Simón pulsando uno de
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="5">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<lyxtabular version="3" rows="3" columns="6">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 color del botón
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+blanco
 \end_layout
 
 \end_inset
@@ -590,6 +609,15 @@ rojo
 
 \begin_layout Plain Layout
 longitud máxima de secuencia a repetir
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
 \end_layout
 
 \end_inset
@@ -668,6 +696,15 @@ créditos concedidos al ganar la partida
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+256
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -692,16 +729,10 @@ Repita las secuencias de pulsaciones que se le indiquen hasta que parpadee
  El botón blanco se mantendrá iluminado mientras disponga de créditos.
 \end_layout
 
-\begin_layout Subsubsection
-Haciendo trampas
-\end_layout
-
 \begin_layout Standard
-La longitudes de secuencia que aparecen en la tabla anterior reproducen
- fielmente las del juego Simon original.
- No obstante es posible reducir dichas longitudes a la mitad.
- Para ello basta pulsar exactamente tres veces el botón retroiluminado blanco
- antes de selecionar el nivel de dificultad.
+De forma alternativa, si se pulsa un botón de inserción de crédito cuando
+ no hay créditos disponibles se iniciará un juego Simón en el nivel más
+ facil.
 \end_layout
 
 \begin_layout Section*

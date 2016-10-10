@@ -37,7 +37,7 @@ credits obtained when the game is won will depend on the selected skill level.
 
   * Includes four arcade joysticks using just an USB connector. 
   * No special drivers are needed. 
-  * Each joystick have six generic buttons, a start button and an insert coin button. 
+  * Each joystick have six generic buttons, a start button and a retroiluminated insert coin button. 
   * The insert coin buttons are also employed in an integrated Simon game in order to obtain credits. 
   * The insert coin buttons are disabled when there are no credits available. 
 
@@ -149,23 +149,19 @@ In order to obtain credits you will have to play the embebed Simon game by
 following these steps:
 
   * Push the white retroiluminated button. All the insert coin buttos will light up. 
-  * Select the skill level by pushing one of the insert coin buttons. The following table describes each skill level. 
+  * Select the skill level by pushing one of the retroiluminated buttons. The following table describes each skill level. 
 
-|color of the insert coin button|maximun length of the sequence|credits obtained when winning the game|
-|:-----------------------------:|:----------------------------:|:------------------------------------:|
-| yellow                        | 8                            | 1				      |
-| blue                          | 14			       | 4				      |
-| green                         | 20                           | 16				      |
-| red                           | 31			       | unlimited			      |
+|color of the retroiluminatd button|maximun length of the sequence|credits obtained when winning the game|
+|:--------------------------------:|:----------------------------:|:------------------------------------:|
+| white                            | 4                            | 1				      |
+| yellow                           | 8                            | 4				      |
+| blue                             | 14			          | 16				      |
+| green                            | 20                           | 256				      |
+| red                              | 31			          | unlimited			      |
 
-  * The system will generate sequences of lights and sounds. Reproduce those sequences by pressing the buttons till the white button flashes. That will indicate you have won the game and got one or more credits. The white button will keep shining as long as you have credits. 
+  * The system will generate sequences of lights and sounds. Reproduce those sequences by pressing the buttons till the white button flashes. That will indicate you have won the game and got one or more credits. The white button will keep shining as long as you have credits.
 
-###  4.2.1 Cheating
-
-The sequence lengths shown in the previous table are those of the original
-Simon game. However, it is possible to halve the maximun length of the
-sequences. To do so just push exactly three times the white retroiluminated
-button before selecting the skill level.
+Alternatively, if an insert coin button is pressed when there are no available credits then a Simon game will start in the easiest level.
 
 #  Acknowledgments
 

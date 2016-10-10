@@ -1,5 +1,5 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
 \begin_document
 \begin_header
 \textclass article
@@ -12,13 +12,13 @@
 \font_roman default
 \font_sans default
 \font_typewriter default
+\font_math auto
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
-
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -28,15 +28,24 @@
 \use_hyperref false
 \papersize default
 \use_geometry false
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -146,8 +155,8 @@ No special drivers are needed.
 \end_layout
 
 \begin_layout Itemize
-Each joystick have six generic buttons, a start button and an insert coin
- button.
+Each joystick have six generic buttons, a start button and an retroiluminated
+ insert coin button.
 \end_layout
 
 \begin_layout Itemize
@@ -483,11 +492,11 @@ In order to obtain credits you will have to play the embebed Simon game
 
 \begin_layout Itemize
 Push the white retroiluminated button.
- All the insert coin buttos will light up.
+ All the insert coin buttons will light up.
 \end_layout
 
 \begin_layout Itemize
-Select the skill level by pushing one of the insert coin buttons.
+Select the skill level by pushing one of the retroiluminated buttons.
  The following table describes each skill level.
 \end_layout
 
@@ -497,19 +506,29 @@ Select the skill level by pushing one of the insert coin buttons.
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="5">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
+<lyxtabular version="3" rows="3" columns="6">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
 <row>
 <cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-color of the insert coin button
+color of the retroiluminated button
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+white
 \end_layout
 
 \end_inset
@@ -557,6 +576,15 @@ red
 
 \begin_layout Plain Layout
 maximun length of the sequence
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
 \end_layout
 
 \end_inset
@@ -635,6 +663,15 @@ credits obtained when winning the game
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+256
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
@@ -660,16 +697,9 @@ The system will generate sequences of lights and sounds.
  The white button will keep shining as long as you have credits.
 \end_layout
 
-\begin_layout Subsubsection
-Cheating
-\end_layout
-
 \begin_layout Standard
-The sequence lengths shown in the previous table are those of the original
- Simon game.
- However, it is possible to halve the maximun length of the sequences.
- To do so just push exactly three times the white retroiluminated button
- before selecting the skill level.
+Alternatively, if an insert coin button is pressed when there are no available
+ credits then a Simon game will start in the easiest level.
 \end_layout
 
 \begin_layout Section*

@@ -92,6 +92,7 @@ volatile uint8_t players_inserting_coins;
 //volatile uint8_t inserting_coins_pulse_counter;
 
 uint32_t credits;
+uint8_t easy_mode=0;
 
 void usb_gamepad_reset_state(gamepad_state_t* gamepad)
 {
@@ -216,6 +217,7 @@ int main(void) {
 									}
 							}
 					}while(pressed_central_button);
+					wait_for_miliseconds(10);//for skipping bounces
 					if(!color_button_has_been_pressed)//a Simon game session has been requested
 					{
 						credits+=simon_game();
@@ -230,9 +232,16 @@ int main(void) {
 						{
 								if(!credits || i==master_gamepad)//the player associated to the master joystick cannot insert coins
 								{
-											play_tone(0);
+											//play_tone(0);
+											wait_for_miliseconds(10);//for skipping bounces
 											while(pressed_color_buttons);
-											nobeep;
+											wait_for_miliseconds(10);//for skipping bounces
+											easy_mode=1;
+											credits+=simon_game();
+											easy_mode=0;
+											if(credits)
+												turn_on_central_button_light;
+											//nobeep;
 								}
 								else
 								//if(!inserting_coins_pulse_counter)//nobody is now inserting coins

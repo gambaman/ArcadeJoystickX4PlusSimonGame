@@ -60,7 +60,7 @@ extern uint32_t credits;
 
 uint16_t tones[6];
 uint8_t sequence[31];
-uint8_t cheat_mode;
+extern uint8_t easy_mode;
 
 void configure_simon(void)
 {
@@ -148,23 +148,27 @@ uint8_t wrong_button(uint8_t button)
 
 uint8_t select_skill_level(void)
 {
-	uint8_t taps_on_central_button=0;
+	//uint8_t taps_on_central_button=0;
+	if(easy_mode)
+		return 0;
 	turn_on_all_color_button_lights;
 	for(uint8_t i=0;1;i=(i+1)&3)
 		if(pressed_light_button(i))
 			{
 				turn_off_color_button_lights;
+				wait_for_miliseconds(10);
 				wait_till_depressed_button(i);
-				wait_for_miliseconds(1);
+				wait_for_miliseconds(10);
 				return i+1;
 			}
 		else
 			if(pressed_central_button)
 			{
-				cheat_mode= (++taps_on_central_button==2);
+				//easy_mode= (++taps_on_central_button==2);
 				wait_for_miliseconds(10);
 				while(pressed_central_button);
 				wait_for_miliseconds(10);
+				return 0;
 			}
 }
 
@@ -173,13 +177,13 @@ uint8_t simon_game(void)
 	uint8_t previous_lights_value=LIGHTS_PORT;
 	uint8_t skill_level=select_skill_level();
 	uint8_t current_length;
-	uint8_t victory=1;																					//skill_level 0- sequence length=0 (inmediate victory)
-	uint8_t sequence_length=0;																	//skill_level 1- sequence length=8
+	uint8_t victory=1;																					//skill_level 0- sequence length=4
+	uint8_t sequence_length=4;																	//skill_level 1- sequence length=8
 	if(skill_level)																							//skill_level 2- sequence length=14
 		sequence_length= skill_level>=4? 31 : 2+6*skill_level;		//skill_level 3- sequence length=20
 																															//skill_level 4 and above- sequence length=31
-	if(cheat_mode)
-		sequence_length=sequence_length>>1;//the maximun sequence length is halved
+	//if(easy_mode)
+	//	sequence_length=sequence_length>>1;//the maximun sequence length is halved
 	for(current_length=0;victory && current_length<sequence_length;)
 	{
 		sequence[current_length++]=random_value;
@@ -201,5 +205,5 @@ uint8_t simon_game(void)
 	}
 		//play_button_five_times(sequence[current_length-1]);
 	LIGHTS_PORT=previous_lights_value;
-	return (!victory || free_play)? 0 : skill_level>3? ~credits : 1<<((skill_level-1)<<1);
+	return (!victory || free_play)? 0 : skill_level>3? ~credits : 1<<(skill_level<<1);
 }
