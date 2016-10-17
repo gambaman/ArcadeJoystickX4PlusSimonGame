@@ -58,7 +58,7 @@ extern uint32_t credits;
 //#define intersequence_pause_duration 700//miliseconds
 //////////////////////////////////////////////////////////////////
 
-uint16_t tones[6];
+//uint16_t tones[6];
 uint8_t sequence[31];
 extern uint8_t easy_mode;
 
