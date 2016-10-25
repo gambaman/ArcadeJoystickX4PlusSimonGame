@@ -243,7 +243,7 @@ int main(void) {
 												turn_on_central_button_light;
 											//nobeep;
 								}
-								else
+								else// a coin must be inserted
 								//if(!inserting_coins_pulse_counter)//nobody is now inserting coins
 									{
 												//inserting_coins_pulse_counter=150;
@@ -254,8 +254,10 @@ int main(void) {
 													if(!credits)
 														turn_off_central_button_light;
 												}
-												while(pressed_color_buttons);
+												wait_for_miliseconds(50);//insert coin pulse duration
 												players_inserting_coins=VIRTUAL_GAMEPAD_ID;
+												while(pressed_color_buttons);
+												wait_for_miliseconds(10);//for skipping bounces
 									}
 						}
 
