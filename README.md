@@ -30,7 +30,7 @@ device lighting up one or more buttons in a random order, after which the
 player must reproduce that order by pressing the buttons. As the game
 progresses, the number of buttons to be pressed increases.
 
-As in the original Simon game there will be four skill levels. The number of
+As in the original Simon game there are several skill levels. The number of
 credits obtained when the game is won will depend on the selected skill level.
 
 ##  1.3 Features
