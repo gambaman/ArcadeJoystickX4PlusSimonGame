@@ -145,7 +145,7 @@ e.
 
 \begin_layout Standard
 Al igual que en el juego Simón original hay distintos niveles de dificultad.
- El número de creditos concedidos al ganar la partida dependerá del nivel
+ El número de créditos concedidos al ganar la partida dependerá del nivel
  de dificultad elegido.
 \end_layout
 
@@ -231,7 +231,7 @@ Firmware
 \end_layout
 
 \begin_layout Standard
-El firmware ya compilado puede descargarse de 
+El firmware ya compilado y puede descargarse de 
 \begin_inset Flex URL
 status collapsed
 
@@ -385,7 +385,7 @@ make
 \begin_layout Standard
 Esto generará un fichero con extensión .hex con el firmware compilado.
  Tras conectar la placa de prototipado podrá programarla siguiendo las instrucci
-ones de la sección siguiente u, opcinalmente si ha descargado la versión
+ones de la sección siguiente u, opcionalmente si ha descargado la versión
  del teensy loader para linea de comandos, programarla directamente ejecutando
  lo siguiente:
 \end_layout
