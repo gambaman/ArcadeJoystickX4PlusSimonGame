@@ -1,4 +1,4 @@
-#  USB arcade joystick x4 plus Simon game
+#  USB arcade joystick x4 plus Simon says game
 
 ##  David Guerrero Martos
 
