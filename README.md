@@ -21,7 +21,7 @@ little challenge that must be won in order to obtain them.
 
 ##  1.2 The challenge
 
-It is the Simon electronic game created by Ralph Baer and Howard J. Morrison
+It is the Simon says electronic game created by Ralph Baer and Howard J. Morrison
 in 1978. The following description of the game has bee taken from wikipedia ([https://en.wikipedia.org/wiki/Simon_%28game%29](https://en.wikipedia.org/wiki/Simon_%28game%29)):
 
 > The device has four colored buttons, each producing a particular tone when
@@ -30,7 +30,7 @@ device lighting up one or more buttons in a random order, after which the
 player must reproduce that order by pressing the buttons. As the game
 progresses, the number of buttons to be pressed increases.
 
-As in the original Simon game there are several skill levels. The number of
+As in the original Simon says game there are several skill levels. The number of
 credits obtained when the game is won will depend on the selected skill level.
 
 ##  1.3 Features
@@ -38,7 +38,7 @@ credits obtained when the game is won will depend on the selected skill level.
   * Includes four arcade joysticks using just an USB connector. 
   * No special drivers are needed. 
   * Each joystick have six generic buttons, a start button and a retroiluminated insert coin button. 
-  * The insert coin buttons are also employed in an integrated Simon game in order to obtain credits. 
+  * The insert coin buttons are also employed in an integrated Simon says game in order to obtain credits. 
   * The insert coin buttons are disabled when there are no credits available. 
 
 #  2 What is needed
@@ -145,7 +145,7 @@ coin button will light down.
 
 ##  4.2 Getting credits
 
-In order to obtain credits you will have to play the embebed Simon game by
+In order to obtain credits you will have to play the embebed Simon says game by
 following these steps:
 
   * Push the white retroiluminated button. All the insert coin buttos will light up. 
@@ -161,7 +161,7 @@ following these steps:
 
   * The system will generate sequences of lights and sounds. Reproduce those sequences by pressing the buttons till the white button flashes. That will indicate you have won the game and got one or more credits. The white button will keep shining as long as you have credits.
 
-Alternatively, if an insert coin button is pressed when there are no available credits then a Simon game will start in the easiest level.
+Alternatively, if an insert coin button is pressed when there are no available credits then a Simon says game will start in the easiest level.
 
 #  Acknowledgments
 
