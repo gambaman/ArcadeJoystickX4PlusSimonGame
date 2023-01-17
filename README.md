@@ -4,6 +4,10 @@
 
 ![figure cabinet.jpg](https://github.com/gambaman/ArcadeJoystickX4PlusSimonGame/blob/master/cabinet.jpg)
 
+# WARNING: THIS PROJECT IS DEPRECATED
+
+You can find an enhanced fork at https://hackaday.io/project/189223-enhanced-arcade-joystick-x4-simon-says-game
+
 #  1 Introduction
 
 ##  1.1 Motivation
